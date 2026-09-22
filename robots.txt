@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Ganti domain di bawah setelah deployment final
+Sitemap: https://cerdasbaca.vercel.app/sitemap.xml

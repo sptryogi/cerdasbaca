@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CerdasBaca — program literasi baca untuk siswa SD, SMP, dan SMA. Kelas membaca, lomba baca, perpustakaan digital, dan jurnal baca yang seru.">
+  <meta name="theme-color" content="#4361ee">
+  <title>CerdasBaca — Program Literasi Baca untuk Anak Sekolah</title>
+
+  <!-- SEO dasar & share preview. Ganti URL domain bila sudah punya domain final. -->
+  <link rel="canonical" href="https://cerdasbaca.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CerdasBaca">
+  <meta property="og:title" content="CerdasBaca — Program Literasi Baca untuk Anak Sekolah">
+  <meta property="og:description" content="Program literasi baca terpadu untuk SD, SMP, dan SMA: kelas membaca, lomba baca, perpustakaan digital, dan jurnal baca.">
+  <meta property="og:url" content="https://cerdasbaca.vercel.app/">
+  <!-- Siapkan aset 1200×630 lalu uncomment baris berikut:
+  <meta property="og:image" content="https://cerdasbaca.vercel.app/og.png"> -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="CerdasBaca — Program Literasi Baca untuk Anak Sekolah">
+  <meta name="twitter:description" content="Program literasi baca terpadu untuk SD, SMP, dan SMA.">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#konten-utama">Lewati ke konten utama</a>
+
+  <!-- ==================== HEADER / NAVBAR ==================== -->
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Navigasi utama">
+      <a href="#beranda" class="brand" aria-label="CerdasBaca — kembali ke beranda">
+        <span class="brand-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 7c4-2 8-2 12 1v18c-4-3-8-3-12-1V7z" fill="#fff"/>
+            <path d="M28 7c-4-2-8-2-12 1v18c4-3 8-3 12-1V7z" fill="#ffe08a"/>
+            <path d="M16 8v18" stroke="#4361ee" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-name">Cerdas<strong>Baca</strong></span>
+      </a>
+
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Buka menu navigasi">
+        <svg class="icon-menu" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+        <svg class="icon-close" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+
+      <div class="nav-menu" id="nav-menu">
+        <ul class="nav-links" role="list">
+          <li><a href="#beranda">Beranda</a></li>
+          <li><a href="#tentang">Tentang Program</a></li>
+          <li><a href="#program">Program Literasi Baca</a></li>
+          <li><a href="#manfaat">Manfaat</a></li>
+          <li><a href="#testimoni">Testimoni</a></li>
+          <li><a href="#kontak">Kontak</a></li>
+        </ul>
+        <div class="nav-auth">
+          <button type="button" class="btn btn-ghost" data-modal-open="modal-login">Masuk</button>
+          <button type="button" class="btn btn-primary" data-modal-open="modal-daftar">Daftar</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="konten-utama">
+    <!-- ==================== HERO ==================== -->
+    <section class="hero" id="beranda" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span aria-hidden="true">🌟</span> Program Literasi untuk Sekolah
+          </p>
+          <h1 id="hero-title">Tumbuhkan <span class="highlight">Cinta Membaca</span> Sejak Dini</h1>
+          <p class="hero-lead">
+            Program literasi baca terpadu untuk siswa SD, SMP, dan SMA — kelas membaca yang seru,
+            lomba baca, perpustakaan digital, dan jurnal baca yang membantu anak tumbuh menjadi
+            pembaca kritis, percaya diri, dan bahagia.
+          </p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-primary btn-lg" data-modal-open="modal-daftar">
+              Daftar Gratis <span aria-hidden="true">→</span>
+            </button>
+            <a href="#program" class="btn btn-outline btn-lg">Lihat Program</a>
+          </div>
+          <p class="hero-login-note">
+            Sudah punya akun sekolah?
+            <button type="button" data-modal-open="modal-login">Masuk di sini</button>
+          </p>
+
+          <ul class="hero-badges" role="list" aria-label="Keunggulan singkat">
+            <li><span aria-hidden="true">✅</span> Gratis untuk sekolah mitra</li>
+            <li><span aria-hidden="true">🎓</span> SD · SMP · SMA</li>
+            <li><span aria-hidden="true">📱</span> Perpustakaan digital</li>
+          </ul>
+        </div>
+
+        <div class="hero-art">
+          <svg class="hero-illustration" viewBox="0 0 520 440" role="img" aria-labelledby="hero-illu-title hero-illu-desc" xmlns="http://www.w3.org/2000/svg">
+            <title id="hero-illu-title">Ilustrasi anak membaca buku</title>
+            <desc id="hero-illu-desc">Dua buku terbuka dengan huruf melayang, bintang, dan siswa yang senang membaca.</desc>
+
+            <!-- soft background -->
+            <circle cx="270" cy="220" r="190" fill="#e8eeff"/>
+            <circle cx="400" cy="90" r="46" fill="#ffe9b8"/>
+            <circle cx="90" cy="340" r="34" fill="#c9f3e4"/>
+
+            <!-- floating letters -->
+            <g font-family="Baloo 2, sans-serif" font-weight="800">
+              <rect x="60" y="70" width="44" height="44" rx="12" fill="#ff9f1c" transform="rotate(-8 82 92)"/>
+              <text x="82" y="100" text-anchor="middle" font-size="26" fill="#fff" transform="rotate(-8 82 92)">A</text>
+
+              <rect x="420" y="250" width="44" height="44" rx="12" fill="#2ec4b6" transform="rotate(10 442 272)"/>
+              <text x="442" y="282" text-anchor="middle" font-size="26" fill="#fff" transform="rotate(10 442 272)">B</text>
+
+              <rect x="120" y="380" width="44" height="44" rx="12" fill="#4361ee" transform="rotate(6 142 402)"/>
+              <text x="142" y="412" text-anchor="middle" font-size="26" fill="#fff" transform="rotate(6 142 402)">C</text>
+            </g>
+
+            <!-- stars -->
+            <path d="M430 130l6 12 13 2-9 9 2 13-12-6-12 6 2-13-9-9 13-2z" fill="#ffb703"/>
+            <path d="M150 150l4 9 10 1-7 7 1 10-8-5-9 5 2-10-7-7 10-1z" fill="#ff9f1c"/>
+
+            <!-- open book -->
+            <g>
+              <path d="M120 250c45-28 95-28 140 8v120c-45-36-95-36-140-8V250z" fill="#4361ee"/>
+              <path d="M400 250c-45-28-95-28-140 8v120c45-36 95-36 140-8V250z" fill="#fff" stroke="#4361ee" stroke-width="6"/>
+              <path d="M260 258v120" stroke="#1d2a78" stroke-width="6" stroke-linecap="round"/>
+              <!-- lines on right page -->
+              <g stroke="#c9d4ff" stroke-width="7" stroke-linecap="round">
+                <path d="M290 290h80"/>
+                <path d="M290 315h95"/>
+                <path d="M290 340h70"/>
+                <path d="M290 365h88"/>
+              </g>
+              <!-- lines on left page -->
+              <g stroke="#9fb4ff" stroke-width="7" stroke-linecap="round">
+                <path d="M150 290h80"/>
+                <path d="M145 315h95"/>
+                <path d="M155 340h70"/>
+                <path d="M148 365h88"/>
+              </g>
+            </g>
+
+            <!-- reading kid (simple character) -->
+            <g>
+              <circle cx="260" cy="150" r="38" fill="#ffd9b3"/>
+              <path d="M222 148c0-28 18-46 38-46s38 18 38 46c-8-14-22-20-38-20s-30 6-38 20z" fill="#3b2f2f"/>
+              <circle cx="247" cy="152" r="4.5" fill="#1f2937"/>
+              <circle cx="273" cy="152" r="4.5" fill="#1f2937"/>
+              <path d="M250 170c6 7 14 7 20 0" stroke="#1f2937" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <!-- body -->
+              <path d="M210 250c8-42 30-62 50-62s42 20 50 62" fill="#2ec4b6"/>
+              <rect x="238" y="188" width="44" height="16" rx="8" fill="#ffd9b3"/>
+            </g>
+
+            <!-- sparkles -->
+            <g fill="#4361ee">
+              <circle cx="70" cy="200" r="6"/>
+              <circle cx="465" cy="380" r="7"/>
+              <circle cx="380" cy="60" r="5"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="hero-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,48 C240,90 480,0 720,32 C960,64 1200,88 1440,40 L1440,90 L0,90 Z" fill="#ffffff"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ==================== TENTANG PROGRAM ==================== -->
+    <section class="section" id="tentang" aria-labelledby="tentang-title">
+      <div class="container">
+        <header class="section-head">
+          <p class="section-kicker">Tentang Program</p>
+          <h2 id="tentang-title">Literasi Baca yang Menyenangkan di Setiap Sekolah</h2>
+          <p class="section-sub">
+            CerdasBaca membantu sekolah membangun budaya membaca yang konsisten — bukan sekadar
+            tugas, tetapi kebiasaan harian yang dinanti anak.
+          </p>
+        </header>
+
+        <div class="about-grid">
+          <article class="about-card">
+            <div class="about-icon" aria-hidden="true">📖</div>
+            <h3>Deskripsi Program</h3>
+            <p>
+              Program literasi baca terpadu berisi kurikulum membaca bertahap, pendampingan guru,
+              koleksi buku digital, dan aktivitas seru yang dapat diadaptasi untuk jenjang SD, SMP,
+              dan SMA.
+            </p>
+          </article>
+
+          <article class="about-card">
+            <div class="about-icon" aria-hidden="true">🎯</div>
+            <h3>Tujuan Program</h3>
+            <ul class="check-list" role="list">
+              <li>Membentuk kebiasaan membaca harian minimal 20 menit.</li>
+              <li>Meningkatkan pemahaman bacaan dan nalar kritis siswa.</li>
+              <li>Menumbuhkan minat baca melalui buku yang relevan &amp; seru.</li>
+              <li>Membangun ekosistem literasi yang melibatkan guru dan orang tua.</li>
+            </ul>
+          </article>
+
+          <article class="about-card about-card-accent">
+            <div class="about-icon" aria-hidden="true">💡</div>
+            <h3>Siapa yang Bergabung?</h3>
+            <p>
+              Sekolah dasar hingga menengah atas, guru pengampu, pustakawan, serta orang tua yang
+              ingin mendampingi anak membaca di rumah. Pendaftaran mitra gratis dan dapat dimulai
+              kapan saja.
+            </p>
+            <button type="button" class="btn btn-light" data-modal-open="modal-daftar">Daftar Sekolah</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROGRAM LITERASI BACA ==================== -->
+    <section class="section section-alt" id="program" aria-labelledby="program-title">
+      <div class="container">
+        <header class="section-head">
+          <p class="section-kicker">Program Literasi Baca</p>
+          <h2 id="program-title">Empat Kegiatan Inti yang Bikin Anak Betah Membaca</h2>
+          <p class="section-sub">
+            Setiap kegiatan dirancang bertahap sesuai usia dan tingkat kemampuan siswa.
+          </p>
+        </header>
+
+        <div class="card-grid card-grid-4">
+          <article class="feature-card">
+            <span class="feature-emoji" aria-hidden="true">👩‍🏫</span>
+            <h3>Kelas Membaca</h3>
+            <p>Sesi membaca terpandu 30 menit dengan teknik membaca lantang, diskusi ringan, dan kata-kata baru yang seru.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-emoji" aria-hidden="true">🏆</span>
+            <h3>Lomba Baca</h3>
+            <p>Lomba membaca cepat, bercerita, dan resensi buku antar kelas maupun antar sekolah mitra setiap semester.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-emoji" aria-hidden="true">💻</span>
+            <h3>Perpustakaan Digital</h3>
+            <p>Ribuan buku cerita, ensiklopedia, dan artikel dapat diakses dari kelas atau rumah melalui perpustakaan digital.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-emoji" aria-hidden="true">✍️</span>
+            <h3>Jurnal Baca</h3>
+            <p>Catatan bacaan sederhana membantu siswa merefleksi isi buku, membangun kosakata, dan melacak progresnya.</p>
+          </article>
+        </div>
+
+        <header class="section-head section-head-sub">
+          <h3 id="jenjang-title">Jenjang yang Didukung</h3>
+          <p class="section-sub">Materi dan aktivitas disesuaikan dengan tahap perkembangan siswa.</p>
+        </header>
+
+        <div class="card-grid card-grid-3" aria-labelledby="jenjang-title">
+          <article class="level-card level-sd">
+            <p class="level-tag">SD · Kelas 1–6</p>
+            <h4><span aria-hidden="true">🧒</span> Jenjang SD</h4>
+            <p>Fokus pada pengenalan huruf, membaca nyaring, cerita bergambar, dan kebiasaan membaca harian bersama guru.</p>
+            <ul class="mini-list" role="list">
+              <li>Kelas membaca 2× seminggu</li>
+              <li>Lomba bercerita</li>
+              <li>Jurnal baca bergambar</li>
+            </ul>
+          </article>
+
+          <article class="level-card level-smp">
+            <p class="level-tag">SMP · Kelas 7–9</p>
+            <h4><span aria-hidden="true">🎒</span> Jenjang SMP</h4>
+            <p>Fokus pada pemahaman bacaan, resensi novel, debat buku, dan eksplorasi perpustakaan digital.</p>
+            <ul class="mini-list" role="list">
+              <li>Klub baca mingguan</li>
+              <li>Lomba resensi &amp; debat buku</li>
+              <li>Jurnal baca reflektif</li>
+            </ul>
+          </article>
+
+          <article class="level-card level-sma">
+            <p class="level-tag">SMA · Kelas 10–12</p>
+            <h4><span aria-hidden="true">🎓</span> Jenjang SMA</h4>
+            <p>Fokus pada literasi kritis, bacaan akademik, projek riset mini, dan pendampingan bacaan ujian.</p>
+            <ul class="mini-list" role="list">
+              <li>Seminar buku &amp; esai</li>
+              <li>Lomba artikel ilmiah populer</li>
+              <li>Jurnal baca analitis</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== STATISTIK ==================== -->
+    <section class="stats" id="statistik" aria-labelledby="stats-title">
+      <div class="container">
+        <h2 id="stats-title" class="visually-hidden">Statistik Program CerdasBaca</h2>
+        <ul class="stats-grid" role="list">
+          <li class="stat-item">
+            <p class="stat-number"><span class="counter" data-target="120">0</span>+</p>
+            <p class="stat-label">🏫 Sekolah Mitra</p>
+          </li>
+          <li class="stat-item">
+            <p class="stat-number"><span class="counter" data-target="15000">0</span>+</p>
+            <p class="stat-label">👩‍🎓 Siswa Aktif</p>
+          </li>
+          <li class="stat-item">
+            <p class="stat-number"><span class="counter" data-target="25000">0</span>+</p>
+            <p class="stat-label">📚 Judul Buku Digital</p>
+          </li>
+          <li class="stat-item">
+            <p class="stat-number"><span class="counter" data-target="98">0</span>%</p>
+            <p class="stat-label">😊 Siswa Lebih Suka Membaca</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ==================== MANFAAT ==================== -->
+    <section class="section" id="manfaat" aria-labelledby="manfaat-title">
+      <div class="container">
+        <header class="section-head">
+          <p class="section-kicker">Manfaat</p>
+          <h2 id="manfaat-title">Dampak Nyata untuk Siswa, Guru, dan Sekolah</h2>
+          <p class="section-sub">
+            Membaca yang konsisten bukan hanya soal nilai — tetapi soal rasa percaya diri,
+            imajinasi, dan kemampuan berpikir seumur hidup.
+          </p>
+        </header>
+
+        <div class="card-grid card-grid-3">
+          <article class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">🧠</span>
+            <h3>Pemahaman Lebih Tajam</h3>
+            <p>Siswa lebih mudah memahami soal, instruksi, dan bacaan lintas mata pelajaran.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">💬</span>
+            <h3>Kosakata &amp; Bahasa</h3>
+            <p>Kosakata bertambah kaya sehingga siswa lebih percaya diri berbicara dan menulis.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">🌟</span>
+            <h3>Minat Baca Naik</h3>
+            <p>Kegiatan seru dan hadiah kecil menumbuhkan kebiasaan membaca yang berkelanjutan.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">🤝</span>
+            <h3>Guru Terlatih</h3>
+            <p>Guru mendapat panduan, pelatihan singkat, dan materi siap pakai untuk kelas membaca.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">🏠</span>
+            <h3>Libur Terlibat</h3>
+            <p>Orang tua mendapat aktivitas baca di rumah agar literasi tumbuh di dua lingkungan.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">🏫</span>
+            <h3>Budaya Sekolah</h3>
+            <p>Sekolah memiliki sudut baca, jadwal literasi, dan laporan progres yang terukur.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TESTIMONI ==================== -->
+    <section class="section section-alt" id="testimoni" aria-labelledby="testimoni-title">
+      <div class="container">
+        <header class="section-head">
+          <p class="section-kicker">Testimoni</p>
+          <h2 id="testimoni-title">Cerita dari Guru, Siswa, dan Orang Tua</h2>
+        </header>
+
+        <div class="card-grid card-grid-3">
+          <figure class="quote-card">
+            <div class="quote-stars" role="img" aria-label="Rating 5 dari 5">⭐⭐⭐⭐⭐</div>
+            <blockquote>
+              <p>“Anak-anak kini antre ke perpustakaan. Program kelas membacanya mudah diikuti guru dan menyenangkan bagi siswa.”</p>
+            </blockquote>
+            <figcaption class="quote-author">
+              <span class="avatar" aria-hidden="true">RA</span>
+              <span>
+                <strong>Rina Anwari</strong>
+                <small>Guru SD · SD Harapan Bangsa</small>
+              </span>
+            </figcaption>
+          </figure>
+
+          <figure class="quote-card">
+            <div class="quote-stars" role="img" aria-label="Rating 5 dari 5">⭐⭐⭐⭐⭐</div>
+            <blockquote>
+              <p>“Dulu saya malas baca. Sekarang saya ikut lomba baca dan perpustakaan digital-nya keren, banyak cerita seru!”</p>
+            </blockquote>
+            <figcaption class="quote-author">
+              <span class="avatar avatar-2" aria-hidden="true">DP</span>
+              <span>
+                <strong>Dimas Pratama</strong>
+                <small>Siswa kelas 8 SMP</small>
+              </span>
+            </figcaption>
+          </figure>
+
+          <figure class="quote-card">
+            <div class="quote-stars" role="img" aria-label="Rating 5 dari 5">⭐⭐⭐⭐⭐</div>
+            <blockquote>
+              <p>“Jurnal baca membuat saya tahu perkembangan anak di rumah. Kami kini membaca bersama setiap malam.”</p>
+            </blockquote>
+            <figcaption class="quote-author">
+              <span class="avatar avatar-3" aria-hidden="true">SW</span>
+              <span>
+                <strong>Sari Wulandari</strong>
+                <small>Orang tua siswa SMA</small>
+              </span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- FAQ -->
+        <header class="section-head section-head-sub">
+          <h3 id="faq-title">Pertanyaan Umum (FAQ)</h3>
+        </header>
+
+        <div class="faq-list" aria-labelledby="faq-title">
+          <details class="faq-item" open>
+            <summary>Apakah program ini berbayar?</summary>
+            <p>Tidak. Sekolah mitra mendapatkan akses dasar kelas membaca, perpustakaan digital, dan jurnal baca gratis. Paket pendampingan lanjutan bersifat opsional.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Berapa lama satu sesi kelas membaca?</summary>
+            <p>Rata-rata 30 menit per sesi, 2–3 kali seminggu, dan dapat disesuaikan dengan jadwal pelajaran sekolah.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Apakah bisa dipakai untuk SD, SMP, dan SMA sekaligus?</summary>
+            <p>Bisa. Materi disediakan terpisah per jenjang SD, SMP, dan SMA dengan tingkat kesulitan yang berbeda.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Bagaimana cara mendaftarkan sekolah?</summary>
+            <p>Klik tombol <strong>Daftar</strong>, isi formulir singkat, lalu tim kami akan menghubungi sekolah Anda dalam 1×24 jam kerja.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CTA + KONTAK ==================== -->
+    <section class="section cta-section" id="kontak" aria-labelledby="kontak-title">
+      <div class="container">
+        <div class="cta-panel">
+          <div class="cta-copy">
+            <p class="section-kicker section-kicker-light">Kontak &amp; Pendaftaran</p>
+            <h2 id="kontak-title">Siap Membangun Sekolah Pembaca?</h2>
+            <p>
+              Hubungi tim CerdasBaca atau daftarkan sekolah Anda sekarang.
+              Kami siap membantu menyiapkan kelas membaca pertama dalam satu minggu.
+            </p>
+
+            <ul class="contact-list" role="list">
+              <li>
+                <span class="contact-icon" aria-hidden="true">📧</span>
+                <a href="mailto:halo@cerdasbaca.id">halo@cerdasbaca.id</a>
+              </li>
+              <li>
+                <span class="contact-icon" aria-hidden="true">📞</span>
+                <a href="tel:+622112345678">(021) 1234-5678</a>
+              </li>
+              <li>
+                <span class="contact-icon" aria-hidden="true">📍</span>
+                <span>Jl. Literasi Nusantara No. 21, Jakarta</span>
+              </li>
+            </ul>
+
+            <div class="cta-actions">
+              <button type="button" class="btn btn-light btn-lg" data-modal-open="modal-daftar">Daftar Sekarang</button>
+              <button type="button" class="btn btn-outline-light btn-lg" data-modal-open="modal-login">Sudah Punya Akun? Masuk</button>
+            </div>
+          </div>
+
+          <form class="contact-form" id="contact-form" action="#" method="get">
+            <h3>Kirim Pesan</h3>
+
+            <div class="form-field">
+              <label for="cf-nama">Nama Lengkap</label>
+              <input type="text" id="cf-nama" name="nama" autocomplete="name" placeholder="Nama Anda" required>
+            </div>
+
+            <div class="form-field">
+              <label for="cf-email">Email</label>
+              <input type="email" id="cf-email" name="email" autocomplete="email" placeholder="nama@sekolah.sch.id" required>
+            </div>
+
+            <div class="form-field">
+              <label for="cf-sekolah">Nama Sekolah</label>
+              <input type="text" id="cf-sekolah" name="sekolah" placeholder="SD/SMP/SMA …" required>
+            </div>
+
+            <div class="form-field">
+              <label for="cf-pesan">Pesan</label>
+              <textarea id="cf-pesan" name="pesan" rows="4" placeholder="Ceritakan kebutuhan sekolah Anda…" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Kirim Pesan</button>
+            <p class="form-status" id="contact-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <p class="brand-name">📖 Cerdas<strong>Baca</strong></p>
+        <p>Program literasi baca untuk anak sekolah — menumbuhkan pembaca kritis, kreatif, dan bahagia.</p>
+      </div>
+
+      <nav class="footer-col" aria-label="Navigasi footer">
+        <h3>Navigasi</h3>
+        <ul role="list">
+          <li><a href="#beranda">Beranda</a></li>
+          <li><a href="#tentang">Tentang Program</a></li>
+          <li><a href="#program">Program Literasi Baca</a></li>
+          <li><a href="#manfaat">Manfaat</a></li>
+          <li><a href="#testimoni">Testimoni</a></li>
+          <li><a href="#kontak">Kontak</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer-col" aria-label="Tautan pendukung">
+        <h3>Dukungan</h3>
+        <ul role="list">
+          <li><a href="#" title="Segera hadir">Panduan Guru</a></li>
+          <li><a href="#" title="Segera hadir">Pusat Bantuan</a></li>
+          <li><a href="#" title="Segera hadir">Kebijakan Privasi</a></li>
+          <li><a href="#" title="Segera hadir">Syarat &amp; Ketentuan</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer-col">
+        <h3>Akun</h3>
+        <ul role="list">
+          <li><button type="button" data-modal-open="modal-login">Masuk</button></li>
+          <li><button type="button" data-modal-open="modal-daftar">Daftar</button></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; <span id="year">2026</span> CerdasBaca. Hak cipta dilindungi undang-undang.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL LOGIN ==================== -->
+  <div class="modal" id="modal-login" role="dialog" aria-modal="true" aria-labelledby="login-title" hidden>
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-card" role="document">
+      <button type="button" class="modal-close" data-modal-close aria-label="Tutup dialog masuk">&times;</button>
+      <div class="modal-icon" aria-hidden="true">🔑</div>
+      <h2 id="login-title">Masuk ke CerdasBaca</h2>
+      <p class="modal-sub">Gunakan akun sekolah atau akun pribadi Anda.</p>
+
+      <form id="login-form" action="#" method="get">
+        <div class="form-field">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" name="email" autocomplete="email" placeholder="nama@sekolah.sch.id" required>
+        </div>
+        <div class="form-field">
+          <label for="login-password">Kata Sandi</label>
+          <input type="password" id="login-password" name="password" autocomplete="current-password" placeholder="••••••••" minlength="6" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Masuk</button>
+        <p class="form-status" id="login-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <p class="modal-switch">Belum punya akun?
+        <button type="button" data-modal-switch="modal-daftar">Daftar sekarang</button>
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL DAFTAR ==================== -->
+  <div class="modal" id="modal-daftar" role="dialog" aria-modal="true" aria-labelledby="daftar-title" hidden>
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-card" role="document">
+      <button type="button" class="modal-close" data-modal-close aria-label="Tutup dialog daftar">&times;</button>
+      <div class="modal-icon" aria-hidden="true">🎒</div>
+      <h2 id="daftar-title">Daftar Gratis</h2>
+      <p class="modal-sub">Isi data singkat — tim kami menghubungi Anda dalam 1×24 jam.</p>
+
+      <form id="daftar-form" action="#" method="get">
+        <div class="form-field">
+          <label for="daftar-nama">Nama Lengkap</label>
+          <input type="text" id="daftar-nama" name="nama" autocomplete="name" placeholder="Nama Anda" required>
+        </div>
+        <div class="form-field">
+          <label for="daftar-email">Email</label>
+          <input type="email" id="daftar-email" name="email" autocomplete="email" placeholder="nama@sekolah.sch.id" required>
+        </div>
+        <div class="form-field">
+          <label for="daftar-jenjang">Jenjang Sekolah</label>
+          <select id="daftar-jenjang" name="jenjang" required>
+            <option value="" selected>Pilih jenjang…</option>
+            <option value="sd">SD (Sekolah Dasar)</option>
+            <option value="smp">SMP (Sekolah Menengah Pertama)</option>
+            <option value="sma">SMA (Sekolah Menengah Atas)</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="daftar-password">Kata Sandi</label>
+          <input type="password" id="daftar-password" name="password" autocomplete="new-password" placeholder="Min. 6 karakter" minlength="6" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Buat Akun</button>
+        <p class="form-status" id="daftar-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <p class="modal-switch">Sudah punya akun?
+        <button type="button" data-modal-switch="modal-login">Masuk di sini</button>
+      </p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
