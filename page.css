@@ -1,0 +1,148 @@
+/* ============================================================
+   CerdasBaca — gaya halaman statis
+   (Panduan Guru, Pusat Bantuan, Kebijakan Privasi, Syarat & Ketentuan,
+    serta footer sederhana di Dashboard)
+   Di-setelah styles.css
+   ============================================================ */
+
+.page-main {
+  padding-block: clamp(2.25rem, 5vw, 3.5rem);
+}
+
+.page-article {
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+.page-article h1 {
+  font-size: clamp(1.8rem, 4.5vw, 2.5rem);
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.page-lead {
+  color: var(--muted);
+  font-size: 1.06rem;
+  margin-bottom: 0.5rem;
+}
+
+.page-updated {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin-bottom: 1.75rem;
+}
+
+.page-article h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.page-article h3 {
+  font-size: 1.08rem;
+  font-weight: 700;
+  margin-top: 1.4rem;
+  margin-bottom: 0.35rem;
+}
+
+.page-article p,
+.page-article li {
+  color: var(--muted);
+}
+
+.page-article ul,
+.page-article ol {
+  display: grid;
+  gap: 0.45rem;
+  padding-left: 1.4rem;
+  margin: 0 0 1em;
+}
+
+.page-article ul {
+  list-style: disc;
+}
+
+.page-article ol {
+  list-style: decimal;
+}
+
+.page-article li::marker {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.page-article a {
+  font-weight: 700;
+}
+
+.page-note {
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.15rem;
+  margin: 1.25rem 0;
+}
+
+.page-note p:last-child {
+  margin-bottom: 0;
+}
+
+/* Kontak sederhana (di atas latar terang) */
+.page-contact {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0;
+}
+
+.page-contact li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.page-contact a {
+  color: var(--primary);
+}
+
+/* Aksi di header halaman statis */
+.page-nav-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* Footer ringkas (halaman statis & dashboard) */
+.page-footer {
+  display: grid;
+  gap: 0.7rem;
+  padding-block: 1.4rem;
+  text-align: center;
+}
+
+.page-footer-copy {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #93a4d4;
+}
+
+.page-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  justify-content: center;
+}
+
+.page-footer-links a {
+  color: #c7d2fe;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.page-footer-links a:hover {
+  color: #ffd27a;
+  text-decoration: underline;
+}

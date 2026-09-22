@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kebijakan Privasi CerdasBaca: data yang dikumpulkan, cara penggunaan, keamanan kata sandi dan sesi, serta hak Anda atas data pribadi.">
+  <meta name="theme-color" content="#4361ee">
+  <title>Kebijakan Privasi — CerdasBaca</title>
+
+  <link rel="canonical" href="https://cerdasbaca.vercel.app/kebijakan-privasi">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CerdasBaca">
+  <meta property="og:title" content="Kebijakan Privasi — CerdasBaca">
+  <meta property="og:description" content="Data yang dikumpulkan, cara penggunaan, keamanan kata sandi dan sesi, serta hak Anda atas data pribadi.">
+  <meta property="og:url" content="https://cerdasbaca.vercel.app/kebijakan-privasi">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Kebijakan Privasi — CerdasBaca">
+  <meta name="twitter:description" content="Data yang dikumpulkan, cara penggunaan, keamanan kata sandi dan sesi, serta hak Anda atas data pribadi.">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="page.css">
+</head>
+<body>
+  <a class="skip-link" href="#konten-utama">Lewati ke konten utama</a>
+
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Navigasi utama">
+      <a href="index.html" class="brand" aria-label="CerdasBaca — kembali ke beranda">
+        <span class="brand-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 7c4-2 8-2 12 1v18c-4-3-8-3-12-1V7z" fill="#fff"/>
+            <path d="M28 7c-4-2-8-2-12 1v18c4-3 8-3 12-1V7z" fill="#ffe08a"/>
+            <path d="M16 8v18" stroke="#4361ee" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-name">Cerdas<strong>Baca</strong></span>
+      </a>
+      <div class="page-nav-actions">
+        <a href="index.html" class="btn btn-ghost">Ke Beranda</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="konten-utama" class="page-main container">
+    <article class="page-article">
+      <p class="section-kicker">Legal</p>
+      <h1>Kebijakan Privasi</h1>
+      <p class="page-lead">
+        Kebijakan ini menjelaskan data apa yang kami kumpulkan melalui layanan
+        CerdasBaca, mengapa data itu dibutuhkan, dan bagaimana kami melindunginya.
+      </p>
+      <p class="page-updated">Terakhir diperbarui: 22 September 2026</p>
+
+      <h2>1. Data yang kami kumpulkan</h2>
+      <p>Saat Anda mendaftar dan menggunakan CerdasBaca, kami menyimpan:</p>
+      <ul>
+        <li><strong>Data akun:</strong> nama lengkap, alamat email, jenjang sekolah (SD/SMP/SMA), dan nama sekolah (bila diisi).</li>
+        <li><strong>Data aktivitas:</strong> catatan progres baca — judul buku, status (sedang dibaca/selesai), jumlah halaman, persentase progres, dan waktu pembaruan.</li>
+        <li><strong>Data sesi:</strong> token sesi yang disimpan sebagai cookie di perangkat Anda selama maksimal 7 hari.</li>
+        <li><strong>Data formulir kontak:</strong> nama, email, nama sekolah, dan isi pesan bila Anda mengirim pesan melalui formulir kontak.</li>
+      </ul>
+      <p>Kami tidak meminta nomor identitas (NIK), nomor kartu, atau data pembayaran.</p>
+
+      <h2>2. Cara kami menggunakan data</h2>
+      <ul>
+        <li>Menampilkan dashboard, statistik, dan daftar bacaan Anda.</li>
+        <li>Menjaga keamanan akun dan mengenali sesi masuk yang sah.</li>
+        <li>Membantu guru dan sekolah melihat perkembangan literasi kelas (hanya data agregat yang tidak mengungkap identitas siswa selain yang diizinkan sekolah).</li>
+        <li>Membalas pesan yang Anda kirimkan ke tim CerdasBaca.</li>
+      </ul>
+
+      <h2>3. Kata sandi &amp; sesi</h2>
+      <div class="page-note">
+        <p>
+          Kata sandi Anda <strong>tidak pernah disimpan dalam bentuk asli</strong>.
+          Kami mengacaknya dengan algoritma scrypt sehingga tidak dapat dibaca kembali
+          bahkan oleh tim kami. Sesi masuk memakai cookie bernama <code>cb_session</code>
+          yang bersifat <em>httpOnly</em> sehingga tidak dapat diakses oleh skrip di
+          peramban, dan berlaku maksimal 7 hari.
+        </p>
+      </div>
+
+      <h2>4. Dengan siapa data dibagikan</h2>
+      <p>
+        Kami <strong>tidak menjual</strong> data pribadi Anda kepada pihak mana pun.
+        Data hanya diproses oleh infrastruktur hosting dan database kami (Vercel dan
+        Vercel Postgres) semata-mata untuk menjalankan layanan, atau jika diwajibkan
+        oleh hukum yang berlaku di Republik Indonesia.
+      </p>
+
+      <h2>5. Penyimpanan &amp; keamanan</h2>
+      <ul>
+        <li>Data disimpan pada database terenkripsi milik penyedia layanan cloud kami.</li>
+        <li>Akses sistem dibatasi hanya untuk tim yang membutuhkannya.</li>
+        <li>Koneksi antara peramban dan server memakai HTTPS.</li>
+        <li>Sesi yang kedaluwarsa dihapus otomatis dari database.</li>
+      </ul>
+
+      <h2>6. Hak Anda</h2>
+      <ul>
+        <li><strong>Mengakses &amp; memperbarui</strong> data akun Anda melalui dashboard.</li>
+        <li><strong>Menghapus akun</strong> beserta catatan baca dengan mengirim permintaan ke email kami.</li>
+        <li><strong>Menarik persetujuan</strong> pemrosesan data kapan pun dengan menghubungi kami; setelah itu layanan akun tidak dapat digunakan lagi.</li>
+      </ul>
+
+      <h2>7. Cookie</h2>
+      <p>
+        Kami hanya menggunakan satu cookie teknis, yaitu cookie sesi <code>cb_session</code>,
+        untuk menjaga Anda tetap masuk. Kami tidak memakai cookie iklan maupun pelacak
+        pihak ketiga di halaman ini. Anda dapat menghapus cookie kapan pun melalui
+        pengaturan peramban; konsekuensinya Anda harus masuk kembali.
+      </p>
+
+      <h2>8. Konten pihak ketiga</h2>
+      <p>
+        Halaman ini memuat huruf dari Google Fonts. Saat memuatnya, peramban Anda
+        menghubungi server Google. Kebijakan privasi Google berlaku untuk pemrosesan
+        data tersebut.
+      </p>
+
+      <h2>9. Perubahan kebijakan</h2>
+      <p>
+        Kami dapat memperbarui kebijakan ini sewaktu-waktu. Tanggal pembaruan selalu
+        dicantumkan di bagian atas halaman. Perubahan besar akan diumumkan melalui
+        email kepada akun terdaftar.
+      </p>
+
+      <h2>10. Kontak</h2>
+      <p>
+        Pertanyaan seputar privasi dapat dikirim ke
+        <a href="mailto:halo@cerdasbaca.id">halo@cerdasbaca.id</a> atau ke
+        Jl. Literasi Nusantara No. 21, Jakarta. Lihat juga
+        <a href="syarat-ketentuan.html">Syarat &amp; Ketentuan</a> kami.
+      </p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container page-footer">
+      <p class="page-footer-copy">&copy; <span id="year">2026</span> CerdasBaca. Hak cipta dilindungi undang-undang.</p>
+      <nav class="page-footer-links" aria-label="Tautan footer">
+        <a href="index.html">Beranda</a>
+        <a href="panduan-guru.html">Panduan Guru</a>
+        <a href="pusat-bantuan.html">Pusat Bantuan</a>
+        <a href="kebijakan-privasi.html">Kebijakan Privasi</a>
+        <a href="syarat-ketentuan.html">Syarat &amp; Ketentuan</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

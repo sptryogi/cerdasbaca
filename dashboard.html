@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#4361ee">
+  <title>Dashboard Siswa — CerdasBaca</title>
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="page.css">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <a class="skip-link" href="#konten-utama">Lewati ke konten utama</a>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Navigasi utama">
+      <a href="index.html" class="brand" aria-label="CerdasBaca — kembali ke beranda">
+        <span class="brand-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 7c4-2 8-2 12 1v18c-4-3-8-3-12-1V7z" fill="#fff"/>
+            <path d="M28 7c-4-2-8-2-12 1v18c4-3 8-3 12-1V7z" fill="#ffe08a"/>
+            <path d="M16 8v18" stroke="#4361ee" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-name">Cerdas<strong>Baca</strong></span>
+      </a>
+
+      <div class="dash-nav">
+        <a href="index.html" class="btn btn-ghost">Beranda</a>
+        <button type="button" id="btn-logout" class="btn btn-primary">Keluar</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="konten-utama" class="container dash-main">
+    <!-- Alert: status memuat / kesalahan -->
+    <div class="dash-alert" id="dash-alert" role="alert" hidden>
+      <span id="dash-alert-text"></span>
+      <button type="button" id="btn-retry" class="btn btn-outline" hidden>Coba lagi</button>
+    </div>
+
+    <!-- Sapaan -->
+    <section class="dash-hero" aria-labelledby="dash-title">
+      <p class="section-kicker">Dashboard Siswa</p>
+      <h1 id="dash-title">Halo, <span id="user-name">Pembaca!</span> <span aria-hidden="true">👋</span></h1>
+      <p class="dash-meta" id="user-meta">Memuat data akun…</p>
+    </section>
+
+    <!-- Statistik ringkas -->
+    <ul class="dash-stats" role="list" aria-label="Ringkasan bacaan">
+      <li class="dash-stat">
+        <span class="dash-stat-num" id="stat-total">0</span>
+        <span class="dash-stat-label">Judul dibaca</span>
+      </li>
+      <li class="dash-stat">
+        <span class="dash-stat-num" id="stat-finished">0</span>
+        <span class="dash-stat-label">Selesai</span>
+      </li>
+      <li class="dash-stat">
+        <span class="dash-stat-num" id="stat-reading">0</span>
+        <span class="dash-stat-label">Sedang dibaca</span>
+      </li>
+      <li class="dash-stat">
+        <span class="dash-stat-num" id="stat-avg">0%</span>
+        <span class="dash-stat-label">Rata-rata progres</span>
+      </li>
+    </ul>
+
+    <div class="dash-grid">
+      <!-- Form catat bacaan -->
+      <section class="dash-card" aria-labelledby="form-title">
+        <h2 id="form-title">Catat Bacaan</h2>
+        <p class="dash-card-sub">Simpan judul yang sedang atau sudah kamu baca. Judul yang sama akan diperbarui.</p>
+
+        <form id="progress-form" action="#" method="get">
+          <div class="form-field">
+            <label for="pg-title">Judul Buku</label>
+            <input type="text" id="pg-title" name="title" placeholder="Mis. Negeri 5 Menara" maxlength="200" required>
+          </div>
+
+          <div class="form-field">
+            <label for="pg-status">Status</label>
+            <select id="pg-status" name="status" required>
+              <option value="reading" selected>Sedang dibaca</option>
+              <option value="finished">Selesai</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="pg-percent">Progres (%)</label>
+              <input type="number" id="pg-percent" name="percent" min="0" max="100" step="1" value="0" inputmode="numeric">
+            </div>
+            <div class="form-field">
+              <label for="pg-pages">Halaman dibaca</label>
+              <input type="number" id="pg-pages" name="pages" min="0" max="100000" step="1" value="0" inputmode="numeric">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Simpan Bacaan</button>
+          <p class="form-status" id="progress-status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <!-- Daftar bacaan -->
+      <section class="dash-card" aria-labelledby="list-title">
+        <h2 id="list-title">Daftar Bacaan</h2>
+        <p class="dash-card-sub" id="list-count">Belum ada catatan.</p>
+
+        <ul class="pg-list" id="progress-list" role="list"></ul>
+        <p class="pg-empty" id="progress-empty">Belum ada catatan. Isi formulir “Catat Bacaan” untuk memulai.</p>
+      </section>
+    </div>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="site-footer">
+    <div class="container page-footer">
+      <p class="page-footer-copy">&copy; <span id="year">2026</span> CerdasBaca. Hak cipta dilindungi undang-undang.</p>
+      <nav class="page-footer-links" aria-label="Tautan footer">
+        <a href="index.html">Beranda</a>
+        <a href="panduan-guru.html">Panduan Guru</a>
+        <a href="pusat-bantuan.html">Pusat Bantuan</a>
+        <a href="kebijakan-privasi.html">Kebijakan Privasi</a>
+        <a href="syarat-ketentuan.html">Syarat &amp; Ketentuan</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

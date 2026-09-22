@@ -1,0 +1,213 @@
+/* ============================================================
+   CerdasBaca — gaya khusus Dashboard Siswa
+   Di-setelah styles.css (memakai variabel & kelas yang sama)
+   ============================================================ */
+
+.dash-main {
+  padding-block: clamp(2rem, 5vw, 3.25rem);
+}
+
+/* Header nav dashboard */
+.dash-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* Alert status */
+.dash-alert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 0.9rem 1.1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-left: 5px solid #be123c;
+  border-radius: var(--radius-sm);
+  color: #9f1239;
+  font-weight: 700;
+}
+
+.dash-alert.is-info {
+  background: var(--primary-soft);
+  border-color: #c9d4ff;
+  border-left-color: var(--primary);
+  color: var(--primary-dark);
+}
+
+.dash-alert .btn {
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* Sapaan */
+.dash-hero h1 {
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  font-weight: 800;
+  margin-bottom: 0.35rem;
+}
+
+.dash-meta {
+  color: var(--muted);
+  margin-bottom: 0;
+}
+
+/* Statistik */
+.dash-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.9rem;
+  margin: 1.75rem 0 2rem;
+}
+
+.dash-stat {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 0.9rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.dash-stat-num {
+  display: block;
+  font-family: var(--font-head);
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--primary);
+}
+
+.dash-stat-label {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* Grid kartu */
+.dash-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.dash-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.35rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.dash-card h2 {
+  font-size: 1.25rem;
+  margin-bottom: 0.3rem;
+}
+
+.dash-card-sub {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.1rem;
+}
+
+/* Dua kolom angka di form */
+.form-row {
+  display: grid;
+  gap: 0.9rem;
+}
+
+/* Daftar bacaan */
+.pg-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.pg-item {
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+}
+
+.pg-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.pg-item-title {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--ink);
+  margin: 0 0 0.2rem;
+  overflow-wrap: anywhere;
+}
+
+.pg-item-meta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.pg-badge {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.pg-badge-reading {
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+}
+
+.pg-badge-finished {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.pg-bar {
+  height: 8px;
+  margin-top: 0.65rem;
+  background: #e8eeff;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pg-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), var(--teal));
+}
+
+.pg-empty {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (min-width: 560px) {
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 900px) {
+  .dash-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .dash-grid {
+    grid-template-columns: 0.9fr 1.1fr;
+    align-items: start;
+  }
+}

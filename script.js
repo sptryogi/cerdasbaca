@@ -2,9 +2,9 @@
    CerdasBaca — interaksi vanilla JS
    - Navbar sticky + hamburger
    - Smooth-scroll (fallback) & penanda section aktif
-   - Modal Login / Daftar (sederhana, tanpa backend)
+   - Modal Login / Daftar → API (/api/login, /api/register) → dashboard
    - Animasi counter statistik
-   - Form kontak (simulasi)
+   - Form kontak (simulasi, tanpa endpoint)
    ============================================================ */
 
 (function () {
@@ -300,13 +300,14 @@
     });
   }
 
-  /* ---------- 7. Form (simulasi, tanpa backend) ---------- */
+  /* ---------- 7. Form ---------- */
   function setStatus(el, message, isError) {
     if (!el) return;
     el.textContent = message;
     el.classList.toggle("is-error", Boolean(isError));
   }
 
+  // Form kontak: masih simulasi demo (belum ada endpoint).
   function bindFakeForm(formId, statusId, successMessage) {
     const form = document.getElementById(formId);
     const status = document.getElementById(statusId);
@@ -326,21 +327,105 @@
       event.preventDefault();
       setStatus(status, successMessage, false);
       form.reset();
-
-      // Untuk modal: tutup otomatis setelah 1,6 detik
-      const modal = form.closest(".modal");
-      if (modal) {
-        window.setTimeout(function () {
-          closeModal(modal);
-          setStatus(status, "", false);
-        }, 1600);
-      }
     });
   }
 
   bindFakeForm("contact-form", "contact-status", "✅ Pesan diterima (demo).");
-  bindFakeForm("login-form", "login-status", "✅ Berhasil masuk (demo).");
-  bindFakeForm("daftar-form", "daftar-status", "✅ Pendaftaran diterima (demo).");
+
+  /* ---------- 7b. Form auth → API (/api/register, /api/login) ---------- */
+  async function postJson(url, payload) {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(payload),
+    });
+    let data = null;
+    try {
+      data = await res.json();
+    } catch (err) {
+      data = null;
+    }
+    return { ok: res.ok, status: res.status, data: data };
+  }
+
+  function bindAuthForm(formId, statusId, endpoint, buildPayload, successText) {
+    const form = document.getElementById(formId);
+    const status = document.getElementById(statusId);
+    if (!form) return;
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (!form.checkValidity()) {
+        setStatus(status, "Mohon lengkapi semua kolom yang wajib diisi.", true);
+        form.reportValidity();
+        return;
+      }
+
+      const button = form.querySelector('button[type="submit"]');
+      if (button) button.disabled = true;
+      setStatus(status, "Mohon tunggu…", false);
+
+      try {
+        const result = await postJson(endpoint, buildPayload(form));
+
+        if (result.ok) {
+          setStatus(status, successText, false);
+          // Tombol tetap nonaktif sampai halaman berpindah
+          window.setTimeout(function () {
+            window.location.href = "dashboard.html";
+          }, 500);
+          return;
+        }
+
+        setStatus(
+          status,
+          (result.data && result.data.error) ||
+            (result.status === 503
+              ? "Database belum terhubung. Coba lagi nanti."
+              : "Permintaan gagal. Silakan coba lagi."),
+          true
+        );
+      } catch (err) {
+        setStatus(
+          status,
+          "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
+          true
+        );
+      }
+
+      if (button) button.disabled = false;
+    });
+  }
+
+  bindAuthForm(
+    "login-form",
+    "login-status",
+    "/api/login",
+    function (form) {
+      return {
+        email: String(form.email.value || "").trim(),
+        password: String(form.password.value || ""),
+      };
+    },
+    "✅ Berhasil masuk. Mengalihkan ke dashboard…"
+  );
+
+  bindAuthForm(
+    "daftar-form",
+    "daftar-status",
+    "/api/register",
+    function (form) {
+      return {
+        name: String(form.nama.value || "").trim(),
+        email: String(form.email.value || "").trim(),
+        level: String(form.jenjang.value || ""),
+        password: String(form.password.value || ""),
+      };
+    },
+    "✅ Akun dibuat. Mengalihkan ke dashboard…"
+  );
 
   /* ---------- 8. Tahun copyright ---------- */
   const yearEl = document.getElementById("year");

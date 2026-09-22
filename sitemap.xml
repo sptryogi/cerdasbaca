@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Ganti domain di bawah (mis. https://namaprojek.vercel.app) setelah tahu URL produksi -->
+<!-- Ganti domain di bawah (mis. https://namaprojek.vercel.app) setelah tahu URL produksi.
+     Halaman dashboard sengaja tidak dimasukkan (noindex). -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://cerdasbaca.vercel.app/</loc>
     <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://cerdasbaca.vercel.app/panduan-guru</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cerdasbaca.vercel.app/pusat-bantuan</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cerdasbaca.vercel.app/kebijakan-privasi</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://cerdasbaca.vercel.app/syarat-ketentuan</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>
