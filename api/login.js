@@ -11,6 +11,7 @@ const {
   createSession,
   sessionCookie,
   publicUser,
+  isAdminEmail,
 } = require("../lib/db");
 
 function send(res, status, body) {
@@ -49,7 +50,7 @@ module.exports = async function handler(req, res) {
     const sql = getSql();
 
     const rows = toRows(await sql`
-      SELECT id, name, email, password_hash, level, school, created_at
+      SELECT id, name, email, role, password_hash, level, school, created_at
       FROM users
       WHERE email = ${email}
       LIMIT 1
@@ -59,6 +60,12 @@ module.exports = async function handler(req, res) {
     // Pesan generik — jangan bocorkan apakah email terdaftar.
     if (!user || !verifyPassword(password, user.password_hash)) {
       return send(res, 401, { error: "Email atau password salah." });
+    }
+
+    // Bootstrap admin saat login: akun lama dengan email ADMIN_EMAIL dipromosikan.
+    if (isAdminEmail(user.email) && user.role !== "admin") {
+      await sql`UPDATE users SET role = 'admin' WHERE id = ${user.id}`;
+      user.role = "admin";
     }
 
     const token = await createSession(user.id);

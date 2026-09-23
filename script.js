@@ -427,6 +427,82 @@
     "✅ Akun dibuat. Mengalihkan ke dashboard…"
   );
 
+  /* ---------- 7c. Testimoni dinamis (landing) ---------- */
+  async function loadTestimonials() {
+    const grid = document.getElementById("testimoni-grid");
+    if (!grid) return;
+
+    try {
+      const res = await fetch("/api/testimonials");
+      if (!res.ok) return; // fallback statis tetap tampil
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (err) {
+        data = null;
+      }
+      const items = data && Array.isArray(data.items) ? data.items : [];
+      if (!items.length) return; // kosong → biarkan fallback statis
+
+      grid.innerHTML = "";
+      items.slice(0, 6).forEach(function (item) {
+        const figure = document.createElement("figure");
+        figure.className = "quote-card";
+        figure.setAttribute("role", "listitem");
+
+        const stars = document.createElement("div");
+        stars.className = "quote-stars";
+        stars.setAttribute("role", "img");
+        stars.setAttribute("aria-label", "Rating 5 dari 5");
+        stars.textContent = "⭐⭐⭐⭐⭐";
+
+        const blockquote = document.createElement("blockquote");
+        const p = document.createElement("p");
+        p.textContent = "“" + String(item.quote || "") + "”";
+        blockquote.appendChild(p);
+
+        const figcaption = document.createElement("figcaption");
+        figcaption.className = "quote-author";
+
+        const name = item.name || "Pengguna CerdasBaca";
+        const initials = String(name)
+          .split(/\s+/)
+          .slice(0, 2)
+          .map(function (w) {
+            return w.charAt(0).toUpperCase();
+          })
+          .join("");
+
+        const avatar = document.createElement("span");
+        avatar.className = "avatar";
+        avatar.setAttribute("aria-hidden", "true");
+        avatar.textContent = initials || "CB";
+
+        const who = document.createElement("span");
+        const strong = document.createElement("strong");
+        strong.textContent = name;
+        const small = document.createElement("small");
+        small.textContent = item.roleLabel || "Pengguna CerdasBaca";
+        who.appendChild(strong);
+        who.appendChild(small);
+
+        figcaption.appendChild(avatar);
+        figcaption.appendChild(who);
+
+        figure.appendChild(stars);
+        figure.appendChild(blockquote);
+        figure.appendChild(figcaption);
+        grid.appendChild(figure);
+      });
+    } catch (err) {
+      /* offline / API mati → fallback statis tetap tampil */
+    }
+  }
+
+  if (document.getElementById("testimoni-grid")) {
+    loadTestimonials();
+  }
+
   /* ---------- 8. Tahun copyright ---------- */
   const yearEl = document.getElementById("year");
   if (yearEl) {

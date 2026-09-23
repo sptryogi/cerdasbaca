@@ -11,6 +11,7 @@ const {
   createSession,
   sessionCookie,
   publicUser,
+  isAdminEmail,
 } = require("../lib/db");
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -79,13 +80,15 @@ module.exports = async function handler(req, res) {
 
     let inserted;
     try {
+      // Bootstrap admin: email = ADMIN_EMAIL → role admin.
+      const role = isAdminEmail(email) ? "admin" : "user";
       inserted = toRows(
         await sql`
-          INSERT INTO users (name, email, password_hash, level, school)
+          INSERT INTO users (name, email, password_hash, level, school, role)
           VALUES (${name}, ${email}, ${hashPassword(password)}, ${level}, ${
             school ? school : null
-          })
-          RETURNING id, name, email, level, school, created_at
+          }, ${role})
+          RETURNING id, name, email, role, level, school, created_at
         `
       );
     } catch (err) {

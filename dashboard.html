@@ -37,6 +37,10 @@
 
       <div class="dash-nav">
         <a href="index.html" class="btn btn-ghost">Beranda</a>
+        <a href="perpustakaan.html" class="btn btn-outline">Perpustakaan</a>
+        <a href="kelas-membaca.html" class="btn btn-outline">Kelas</a>
+        <a href="lomba-baca.html" class="btn btn-outline">Lomba</a>
+        <a href="admin.html" class="btn btn-outline" id="link-admin" hidden>Admin</a>
         <button type="button" id="btn-logout" class="btn btn-primary">Keluar</button>
       </div>
     </nav>
@@ -107,6 +111,16 @@
             </div>
           </div>
 
+          <div class="form-field">
+            <label for="pg-date">Tanggal baca</label>
+            <input type="date" id="pg-date" name="read_date">
+          </div>
+
+          <div class="form-field">
+            <label for="pg-note">Catatan / kesan</label>
+            <textarea id="pg-note" name="note" rows="3" maxlength="1000" placeholder="Bagian mana yang paling seru? Kata baru apa yang ditemukan?"></textarea>
+          </div>
+
           <button type="submit" class="btn btn-primary btn-block">Simpan Bacaan</button>
           <p class="form-status" id="progress-status" role="status" aria-live="polite"></p>
         </form>
@@ -120,6 +134,41 @@
         <ul class="pg-list" id="progress-list" role="list"></ul>
         <p class="pg-empty" id="progress-empty">Belum ada catatan. Isi formulir “Catat Bacaan” untuk memulai.</p>
       </section>
+
+      <!-- Testimoni -->
+      <section class="dash-card" aria-labelledby="dash-testi-title">
+        <h2 id="dash-testi-title">Kirim Testimoni</h2>
+        <p class="dash-card-sub">Ceritakan pengalamanmu. Testimoni ditampilkan setelah disetujui admin.</p>
+
+        <form id="testi-form" action="#" method="get">
+          <div class="form-field">
+            <label for="ts-quote">Testimoni</label>
+            <textarea id="ts-quote" name="quote" rows="4" minlength="10" maxlength="500" placeholder="Tulis pengalamanmu (10–500 karakter)…" required></textarea>
+          </div>
+          <div class="form-field">
+            <label for="ts-role">Saya adalah</label>
+            <select id="ts-role" name="role_label">
+              <option value="siswa" selected>Siswa</option>
+              <option value="guru">Guru</option>
+              <option value="orang tua">Orang tua</option>
+              <option value="lainnya">Lainnya</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Kirim Testimoni</button>
+          <p class="form-status" id="testi-status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <!-- Link cepat 4 pilar -->
+      <section class="dash-card" aria-labelledby="dash-links-title">
+        <h2 id="dash-links-title">Program Literasi</h2>
+        <p class="dash-card-sub">Akses cepat ke empat pilar program.</p>
+        <ul class="quick-links" role="list">
+          <li><a href="kelas-membaca.html" class="btn btn-outline btn-block">👩‍🏫 Kelas Membaca</a></li>
+          <li><a href="lomba-baca.html" class="btn btn-outline btn-block">🏆 Lomba Baca</a></li>
+          <li><a href="perpustakaan.html" class="btn btn-outline btn-block">💻 Perpustakaan Digital</a></li>
+        </ul>
+      </section>
     </div>
   </main>
 
@@ -129,6 +178,9 @@
       <p class="page-footer-copy">&copy; <span id="year">2026</span> CerdasBaca. Hak cipta dilindungi undang-undang.</p>
       <nav class="page-footer-links" aria-label="Tautan footer">
         <a href="index.html">Beranda</a>
+        <a href="perpustakaan.html">Perpustakaan</a>
+        <a href="kelas-membaca.html">Kelas Membaca</a>
+        <a href="lomba-baca.html">Lomba Baca</a>
         <a href="panduan-guru.html">Panduan Guru</a>
         <a href="pusat-bantuan.html">Pusat Bantuan</a>
         <a href="kebijakan-privasi.html">Kebijakan Privasi</a>

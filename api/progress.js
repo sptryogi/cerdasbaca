@@ -1,6 +1,6 @@
-/* /api/progress — progres baca milik pengguna yang sedang masuk.
-   GET  → daftar progres
-   POST → tambah / perbarui progres (berdasarkan judul)
+/* /api/progress — jurnal & progres baca milik pengguna yang sedang masuk.
+   GET  → daftar progres (termasuk note & read_date)
+   POST → tambah / perbarui progres per judul (jurnal baca)
 */
 
 "use strict";
@@ -8,10 +8,9 @@
 const {
   initDb,
   getSql,
-  sendDbError,
+  sendApiError,
   toRows,
-  getSessionToken,
-  getUserFromRequest,
+  requireUser,
 } = require("../lib/db");
 
 function send(res, status, body) {
@@ -39,23 +38,10 @@ function mapProgress(row) {
     status: row.status,
     pages: Number(row.pages) || 0,
     percent: Number(row.percent) || 0,
+    note: row.note || "",
+    readDate: row.read_date || null,
     updatedAt: row.updated_at || row.updatedAt || null,
   };
-}
-
-/** Wajib masuk; lempar 401 lewat res (return null) atau error DB (throw). */
-async function requireUser(req, res) {
-  if (!getSessionToken(req)) {
-    send(res, 401, { error: "Anda belum masuk." });
-    return null;
-  }
-  await initDb();
-  const user = await getUserFromRequest(req);
-  if (!user) {
-    send(res, 401, { error: "Anda belum masuk." });
-    return null;
-  }
-  return user;
 }
 
 function toIntInRange(value, min, max, fallback) {
@@ -66,6 +52,14 @@ function toIntInRange(value, min, max, fallback) {
   return n;
 }
 
+/** "" / null → null; "YYYY-MM-DD" valid → string itu sendiri; salah → NaN. */
+function toReadDate(value) {
+  if (value === undefined || value === null || value === "") return null;
+  const s = String(value).trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s) || Number.isNaN(Date.parse(s))) return NaN;
+  return s;
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== "GET" && req.method !== "POST") {
     res.setHeader("Allow", "GET, POST");
@@ -73,14 +67,13 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const user = await requireUser(req, res);
-    if (!user) return; // 401 sudah dikirim
-
+    await initDb();
+    const user = await requireUser(req);
     const sql = getSql();
 
     if (req.method === "GET") {
       const rows = toRows(await sql`
-        SELECT id, title, status, pages, percent, updated_at
+        SELECT id, title, status, pages, percent, note, read_date, updated_at
         FROM reading_progress
         WHERE user_id = ${user.id}
         ORDER BY updated_at DESC, id DESC
@@ -94,6 +87,8 @@ module.exports = async function handler(req, res) {
     const status = String(body.status || "reading").trim().toLowerCase();
     const pages = toIntInRange(body.pages, 0, 100000, 0);
     let percent = toIntInRange(body.percent, 0, 100, 0);
+    const note = String(body.note == null ? "" : body.note).trim().slice(0, 1000);
+    const readDate = toReadDate(body.read_date);
 
     if (title.length < 1 || title.length > 200) {
       return send(res, 400, {
@@ -109,24 +104,25 @@ module.exports = async function handler(req, res) {
     if (Number.isNaN(percent)) {
       return send(res, 400, { error: "Progres harus 0–100." });
     }
+    if (Number.isNaN(readDate)) {
+      return send(res, 400, { error: "Tanggal baca tidak valid (format YYYY-MM-DD)." });
+    }
     if (status === "finished") percent = 100;
 
-    // Perbarui dulu bila judul sudah ada; kalau belum, sisipkan baru.
-    let rows = toRows(await sql`
-      UPDATE reading_progress
-      SET status = ${status}, pages = ${pages}, percent = ${percent},
-          updated_at = now()
-      WHERE user_id = ${user.id} AND title = ${title}
-      RETURNING id, title, status, pages, percent, updated_at
+    // Upsert atomik per (user_id, title) — aman dari race condition.
+    const rows = toRows(await sql`
+      INSERT INTO reading_progress
+        (user_id, title, status, pages, percent, note, read_date)
+      VALUES (${user.id}, ${title}, ${status}, ${pages}, ${percent}, ${note}, ${readDate})
+      ON CONFLICT (user_id, title) DO UPDATE
+        SET status = EXCLUDED.status,
+            pages = EXCLUDED.pages,
+            percent = EXCLUDED.percent,
+            note = EXCLUDED.note,
+            read_date = EXCLUDED.read_date,
+            updated_at = now()
+      RETURNING id, title, status, pages, percent, note, read_date, updated_at
     `);
-
-    if (!rows.length) {
-      rows = toRows(await sql`
-        INSERT INTO reading_progress (user_id, title, status, pages, percent)
-        VALUES (${user.id}, ${title}, ${status}, ${pages}, ${percent})
-        RETURNING id, title, status, pages, percent, updated_at
-      `);
-    }
 
     const item = rows[0];
     if (!item) {
@@ -134,6 +130,6 @@ module.exports = async function handler(req, res) {
     }
     return send(res, 200, { ok: true, item: mapProgress(item) });
   } catch (err) {
-    sendDbError(res, err);
+    sendApiError(res, err);
   }
 };

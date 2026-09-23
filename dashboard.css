@@ -119,6 +119,20 @@
   gap: 0.9rem;
 }
 
+/* Catatan jurnal */
+.pg-item-note {
+  margin: 0.35rem 0 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+/* Link cepat program */
+.quick-links {
+  display: grid;
+  gap: 0.65rem;
+}
+
 /* Daftar bacaan */
 .pg-list {
   display: grid;

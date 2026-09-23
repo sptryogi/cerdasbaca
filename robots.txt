@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /api/
 
 # Ganti domain di bawah setelah deployment final
 Sitemap: https://cerdasbaca.vercel.app/sitemap.xml

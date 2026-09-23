@@ -24,6 +24,9 @@
   const emptyEl = document.getElementById("progress-empty");
   const listCount = document.getElementById("list-count");
   const logoutBtn = document.getElementById("btn-logout");
+  const adminLink = document.getElementById("link-admin");
+  const testiForm = document.getElementById("testi-form");
+  const testiStatus = document.getElementById("testi-status");
 
   const LEVEL_LABEL = {
     sd: "Jenjang SD",
@@ -102,6 +105,56 @@
       ].filter(Boolean);
       metaEl.textContent = parts.join(" · ");
     }
+    if (adminLink) adminLink.hidden = user.role !== "admin";
+  }
+
+  /* ---------- Testimoni ---------- */
+  if (testiForm) {
+    testiForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (!testiForm.checkValidity()) {
+        setStatus(testiStatus, "Testimoni harus 10–500 karakter.", true);
+        testiForm.reportValidity();
+        return;
+      }
+
+      const payload = {
+        quote: String(testiForm.elements.quote.value || "").trim(),
+        role_label: String(testiForm.elements.role_label.value || "lainnya"),
+      };
+
+      const button = testiForm.querySelector('button[type="submit"]');
+      if (button) button.disabled = true;
+      setStatus(testiStatus, "Mengirim…", false);
+
+      try {
+        const result = await fetchJson("/api/testimonials", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (result.ok) {
+          setStatus(testiStatus, "✅ Testimoni terkirim. Menunggu persetujuan admin.", false);
+          testiForm.reset();
+        } else {
+          setStatus(
+            testiStatus,
+            errorMessage(result.data && result.data.error),
+            true
+          );
+        }
+      } catch (err) {
+        setStatus(
+          testiStatus,
+          "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
+          true
+        );
+      } finally {
+        if (button) button.disabled = false;
+      }
+    });
   }
 
   function renderProgress(items) {
@@ -128,13 +181,20 @@
       const statusLabel = STATUS_LABEL[item.status] || item.status || "";
       const percent = clampInt(item.percent, 0, 100, 0);
       const pages = clampInt(item.pages, 0, 100000, 0);
-      const dateText = formatDate(item.updatedAt);
+      const dateText = formatDate(item.readDate || item.updatedAt);
       meta.textContent = [percent + "%", pages + " halaman", dateText]
         .filter(Boolean)
         .join(" · ");
 
       main.appendChild(title);
       main.appendChild(meta);
+
+      if (item.note) {
+        const note = document.createElement("p");
+        note.className = "pg-item-note";
+        note.textContent = "Catatan: " + item.note;
+        main.appendChild(note);
+      }
 
       const badge = document.createElement("span");
       badge.className =
@@ -261,12 +321,20 @@
           ? 100
           : clampInt(form.elements.percent.value, 0, 100, 0);
       const pagesValue = clampInt(form.elements.pages.value, 0, 100000, 0);
+      const readDateValue = form.elements.read_date
+        ? String(form.elements.read_date.value || "").trim()
+        : "";
+      const noteValue = form.elements.note
+        ? String(form.elements.note.value || "").trim().slice(0, 1000)
+        : "";
 
       const payload = {
         title: String(form.elements.title.value || "").trim(),
         status: statusValue,
         percent: percentValue,
         pages: pagesValue,
+        read_date: readDateValue,
+        note: noteValue,
       };
 
       const button = form.querySelector('button[type="submit"]');

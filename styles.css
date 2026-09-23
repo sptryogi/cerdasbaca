@@ -651,6 +651,20 @@ button.btn {
   margin-bottom: 0;
 }
 
+.feature-link {
+  display: inline-block;
+  margin-top: 0.65rem;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.feature-link:hover {
+  text-decoration: underline;
+  color: var(--primary-dark);
+}
+
 /* Jenjang */
 .level-card {
   background: #fff;

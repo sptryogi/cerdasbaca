@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#4361ee">
+  <title>Panel Admin — CerdasBaca</title>
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="page.css">
+  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <a class="skip-link" href="#konten-utama">Lewati ke konten utama</a>
+
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Navigasi utama">
+      <a href="index.html" class="brand" aria-label="CerdasBaca — kembali ke beranda">
+        <span class="brand-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 7c4-2 8-2 12 1v18c-4-3-8-3-12-1V7z" fill="#fff"/>
+            <path d="M28 7c-4-2-8-2-12 1v18c4-3 8-3 12-1V7z" fill="#ffe08a"/>
+            <path d="M16 8v18" stroke="#4361ee" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-name">Cerdas<strong>Baca</strong></span>
+      </a>
+      <div class="dash-nav">
+        <a href="index.html" class="btn btn-ghost">Beranda</a>
+        <a href="dashboard.html" class="btn btn-outline">Dashboard</a>
+        <button type="button" id="btn-logout" class="btn btn-primary">Keluar</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="konten-utama" class="container dash-main">
+    <div class="dash-alert" id="admin-alert" role="alert" hidden>
+      <span id="admin-alert-text"></span>
+    </div>
+
+    <section class="dash-hero" aria-labelledby="admin-title">
+      <p class="section-kicker">Panel Admin</p>
+      <h1 id="admin-title">Kelola Data Program <span aria-hidden="true">🛠️</span></h1>
+      <p class="dash-meta" id="admin-meta">Memuat data admin…</p>
+    </section>
+
+    <!-- Statistik -->
+    <ul class="dash-stats" id="admin-stats" role="list" aria-label="Statistik program" hidden>
+      <li class="dash-stat"><span class="dash-stat-num" id="st-users">0</span><span class="dash-stat-label">Pengguna</span></li>
+      <li class="dash-stat"><span class="dash-stat-num" id="st-books">0</span><span class="dash-stat-label">Buku</span></li>
+      <li class="dash-stat"><span class="dash-stat-num" id="st-classes">0</span><span class="dash-stat-label">Kelas</span></li>
+      <li class="dash-stat"><span class="dash-stat-num" id="st-competitions">0</span><span class="dash-stat-label">Lomba</span></li>
+      <li class="dash-stat"><span class="dash-stat-num" id="st-enrollments">0</span><span class="dash-stat-label">Pendaftar kelas</span></li>
+      <li class="dash-stat"><span class="dash-stat-num" id="st-entries">0</span><span class="dash-stat-label">Peserta lomba</span></li>
+      <li class="dash-stat"><span class="dash-stat-num" id="st-testimonials">0</span><span class="dash-stat-label">Testimoni</span></li>
+      <li class="dash-stat"><span class="dash-stat-num" id="st-pending">0</span><span class="dash-stat-label">Testimoni pending</span></li>
+    </ul>
+
+    <div class="dash-grid">
+      <!-- Tambah buku -->
+      <section class="dash-card" aria-labelledby="book-form-title">
+        <h2 id="book-form-title">Tambah Buku</h2>
+        <p class="dash-card-sub">Buku baru langsung tampil di halaman Perpustakaan Digital.</p>
+        <form id="book-form" action="#" method="get">
+          <div class="form-field">
+            <label for="bk-title">Judul</label>
+            <input type="text" id="bk-title" name="title" maxlength="200" required>
+          </div>
+          <div class="form-field">
+            <label for="bk-author">Penulis</label>
+            <input type="text" id="bk-author" name="author" maxlength="120">
+          </div>
+          <div class="form-field">
+            <label for="bk-desc">Deskripsi</label>
+            <textarea id="bk-desc" name="description" rows="3" maxlength="2000"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="bk-level">Level</label>
+              <select id="bk-level" name="level" required>
+                <option value="semua" selected>Semua</option>
+                <option value="sd">SD</option>
+                <option value="smp">SMP</option>
+                <option value="sma">SMA</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="bk-pages">Halaman</label>
+              <input type="number" id="bk-pages" name="pages" min="0" max="100000" step="1" value="0" inputmode="numeric">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="bk-emoji">Ikon cover</label>
+              <input type="text" id="bk-emoji" name="cover_emoji" maxlength="16" value="📘">
+            </div>
+            <div class="form-field">
+              <label for="bk-color">Warna cover (hex)</label>
+              <input type="text" id="bk-color" name="cover_color" maxlength="7" value="#4361ee" pattern="^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Simpan Buku</button>
+          <p class="form-status" id="book-status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <!-- Tambah kelas -->
+      <section class="dash-card" aria-labelledby="class-form-title">
+        <h2 id="class-form-title">Tambah Kelas Membaca</h2>
+        <p class="dash-card-sub">Kelas baru langsung tampil di halaman Kelas Membaca.</p>
+        <form id="class-form" action="#" method="get">
+          <div class="form-field">
+            <label for="cl-title">Judul kelas</label>
+            <input type="text" id="cl-title" name="title" minlength="3" maxlength="120" required>
+          </div>
+          <div class="form-field">
+            <label for="cl-desc">Deskripsi</label>
+            <textarea id="cl-desc" name="description" rows="3" maxlength="1000"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="cl-level">Level</label>
+              <select id="cl-level" name="level" required>
+                <option value="semua" selected>Semua</option>
+                <option value="sd">SD</option>
+                <option value="smp">SMP</option>
+                <option value="sma">SMA</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="cl-capacity">Kuota</label>
+              <input type="number" id="cl-capacity" name="capacity" min="1" max="500" step="1" value="20" inputmode="numeric">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="cl-schedule">Jadwal</label>
+              <input type="text" id="cl-schedule" name="schedule_text" maxlength="120" placeholder="Mis. Selasa 07.30">
+            </div>
+            <div class="form-field">
+              <label for="cl-teacher">Pengajar</label>
+              <input type="text" id="cl-teacher" name="teacher_name" maxlength="80">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Simpan Kelas</button>
+          <p class="form-status" id="class-status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <!-- Tambah lomba -->
+      <section class="dash-card" aria-labelledby="comp-form-title">
+        <h2 id="comp-form-title">Tambah Lomba Baca</h2>
+        <p class="dash-card-sub">Lomba baru langsung tampil di halaman Lomba Baca.</p>
+        <form id="comp-form" action="#" method="get">
+          <div class="form-field">
+            <label for="cp-title">Judul lomba</label>
+            <input type="text" id="cp-title" name="title" minlength="3" maxlength="150" required>
+          </div>
+          <div class="form-field">
+            <label for="cp-desc">Deskripsi</label>
+            <textarea id="cp-desc" name="description" rows="3" maxlength="1500"></textarea>
+          </div>
+          <div class="form-field">
+            <label for="cp-rules">Aturan</label>
+            <textarea id="cp-rules" name="rules" rows="3" maxlength="3000"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="cp-level">Level</label>
+              <select id="cp-level" name="level" required>
+                <option value="semua" selected>Semua</option>
+                <option value="sd">SD</option>
+                <option value="smp">SMP</option>
+                <option value="sma">SMA</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="cp-start">Tanggal mulai</label>
+              <input type="date" id="cp-start" name="start_date">
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="cp-end">Tanggal selesai</label>
+            <input type="date" id="cp-end" name="end_date">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Simpan Lomba</button>
+          <p class="form-status" id="comp-status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <!-- Testimoni -->
+      <section class="dash-card" aria-labelledby="testi-title">
+        <h2 id="testi-title">Moderasi Testimoni</h2>
+        <p class="dash-card-sub" id="testi-count">Memuat testimoni…</p>
+        <ul class="testi-list" id="testi-list" role="list"></ul>
+        <p class="pg-empty" id="testi-empty" hidden>Belum ada testimoni masuk.</p>
+      </section>
+
+      <!-- Daftar buku -->
+      <section class="dash-card" aria-labelledby="booklist-title">
+        <h2 id="booklist-title">Katalog Buku</h2>
+        <p class="dash-card-sub" id="booklist-count">Memuat katalog…</p>
+        <ul class="admin-list" id="book-list" role="list"></ul>
+        <p class="pg-empty" id="booklist-empty" hidden>Katalog kosong.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container page-footer">
+      <p class="page-footer-copy">&copy; <span id="year">2026</span> CerdasBaca. Hak cipta dilindungi undang-undang.</p>
+      <nav class="page-footer-links" aria-label="Tautan footer">
+        <a href="index.html">Beranda</a>
+        <a href="perpustakaan.html">Perpustakaan</a>
+        <a href="kelas-membaca.html">Kelas Membaca</a>
+        <a href="lomba-baca.html">Lomba Baca</a>
+        <a href="panduan-guru.html">Panduan Guru</a>
+        <a href="pusat-bantuan.html">Pusat Bantuan</a>
+        <a href="kebijakan-privasi.html">Kebijakan Privasi</a>
+        <a href="syarat-ketentuan.html">Syarat &amp; Ketentuan</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
