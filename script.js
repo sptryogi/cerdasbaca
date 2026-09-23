@@ -418,9 +418,12 @@
 
         if (result.ok) {
           setStatus(status, successText, false);
-          // Tombol tetap nonaktif sampai halaman berpindah
+          // Arahkan sesuai role: admin → panel kelola, siswa → dashboard.
+          const role =
+            result.data && result.data.user && result.data.user.role;
+          const target = role === "admin" ? "admin.html" : "dashboard.html";
           window.setTimeout(function () {
-            window.location.href = "dashboard.html";
+            window.location.href = target;
           }, 500);
           return;
         }
@@ -455,7 +458,7 @@
         password: String(form.password.value || ""),
       };
     },
-    "✅ Berhasil masuk. Mengalihkan ke dashboard…"
+    "✅ Berhasil masuk. Mengalihkan…"
   );
 
   bindAuthForm(
@@ -470,7 +473,7 @@
         password: String(form.password.value || ""),
       };
     },
-    "✅ Akun dibuat. Mengalihkan ke dashboard…"
+    "✅ Akun dibuat. Mengalihkan…"
   );
 
   /* ---------- 7c. Testimoni dinamis (landing) ---------- */

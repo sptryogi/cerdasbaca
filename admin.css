@@ -7,6 +7,32 @@
   grid-template-columns: repeat(2, 1fr);
 }
 
+/* Lompat ke bagian (anchor di hero) */
+.admin-jumps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.admin-jumps a {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg-alt);
+  color: var(--primary-dark, var(--primary));
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.admin-jumps a:hover,
+.admin-jumps a:focus-visible {
+  background: var(--primary-soft, #e8eeff);
+  border-color: var(--primary);
+}
+
 @media (min-width: 560px) {
   #admin-stats {
     grid-template-columns: repeat(4, 1fr);

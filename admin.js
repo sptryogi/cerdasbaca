@@ -2,8 +2,10 @@
    CerdasBaca — Panel Admin
    - Guard role=admin via GET /api/me (redirect bila bukan admin)
    - Statistik via GET /api/admin/stats
-   - CRUD buku via /api/books (POST/PUT/DELETE)
-   - Kelas & lomba via POST /api/classes, /api/competitions
+   - CRUD buku via /api/books (POST/PUT/DELETE) + katalog
+   - Daftar kelas via GET /api/classes, tambah via POST /api/classes
+   - Daftar lomba via GET /api/competitions, tambah via POST /api/competitions
+   - Monitoring jurnal siswa via GET /api/progress?admin=1
    - Moderasi testimoni via GET /api/testimonials?admin=1 + PUT
    Render memakai textContent / createElement (anti-XSS).
    ============================================================ */
@@ -35,6 +37,18 @@
   const testiListEl = document.getElementById("testi-list");
   const testiCount = document.getElementById("testi-count");
   const testiEmpty = document.getElementById("testi-empty");
+
+  const classListEl = document.getElementById("class-list");
+  const classListCount = document.getElementById("classlist-count");
+  const classListEmpty = document.getElementById("classlist-empty");
+
+  const compListEl = document.getElementById("comp-list");
+  const compListCount = document.getElementById("complist-count");
+  const compListEmpty = document.getElementById("complist-empty");
+
+  const jurnalListEl = document.getElementById("jurnal-list");
+  const jurnalListCount = document.getElementById("jurnallist-count");
+  const jurnalListEmpty = document.getElementById("jurnallist-empty");
 
   const STAT_IDS = {
     users: "st-users",
@@ -85,6 +99,12 @@
     return Math.min(max, Math.max(min, Math.round(n)));
   }
 
+  /** Potong teks panjang (catatan jurnal) agar rapi di daftar. */
+  function truncateText(value, max) {
+    const s = String(value || "");
+    return s.length > max ? s.slice(0, max - 1) + "…" : s;
+  }
+
   async function postJson(url, payload, method) {
     return fetchJson(url, {
       method: method || "POST",
@@ -109,6 +129,177 @@
       if (statsWrap) statsWrap.hidden = false;
     } catch (err) {
       if (statsWrap) statsWrap.hidden = true;
+    }
+  }
+
+  /* ---------- Daftar kelas ---------- */
+  async function loadClasses() {
+    if (!classListEl) return;
+    try {
+      const result = await fetchJson("/api/classes");
+      if (!result.ok) {
+        classListEl.innerHTML = "";
+        if (classListCount) classListCount.textContent = errorMessage(result.data && result.data.error);
+        return;
+      }
+      const items = Array.isArray(result.data && result.data.items) ? result.data.items : [];
+      classListEl.innerHTML = "";
+
+      items.forEach(function (item) {
+        const li = document.createElement("li");
+        li.className = "admin-item";
+
+        const title = document.createElement("p");
+        title.className = "testi-quote";
+        title.textContent = item.title || "(Tanpa judul)";
+
+        const meta = document.createElement("p");
+        meta.className = "admin-meta";
+        meta.textContent = [
+          item.level || "",
+          item.scheduleText || "Tanpa jadwal",
+          item.teacherName ? "Pengajar: " + item.teacherName : "",
+          item.capacity ? "Kuota: " + item.capacity : "",
+          typeof item.seatsTaken === "number" ? item.seatsTaken + " terdaftar" : "",
+        ]
+          .filter(Boolean)
+          .join(" · ");
+
+        li.appendChild(title);
+        li.appendChild(meta);
+        classListEl.appendChild(li);
+      });
+
+      if (classListEmpty) classListEmpty.hidden = items.length > 0;
+      if (classListCount) {
+        classListCount.textContent = items.length
+          ? items.length + " kelas aktif."
+          : "Belum ada kelas.";
+      }
+    } catch (err) {
+      if (classListCount) classListCount.textContent = "Tidak dapat memuat daftar kelas.";
+    }
+  }
+
+  /* ---------- Daftar lomba ---------- */
+  async function loadCompetitions() {
+    if (!compListEl) return;
+    try {
+      const result = await fetchJson("/api/competitions");
+      if (!result.ok) {
+        compListEl.innerHTML = "";
+        if (compListCount) compListCount.textContent = errorMessage(result.data && result.data.error);
+        return;
+      }
+      const items = Array.isArray(result.data && result.data.items) ? result.data.items : [];
+      compListEl.innerHTML = "";
+
+      items.forEach(function (item) {
+        const li = document.createElement("li");
+        li.className = "admin-item";
+
+        const title = document.createElement("p");
+        title.className = "testi-quote";
+        title.textContent = item.title || "(Tanpa judul)";
+
+        const meta = document.createElement("p");
+        meta.className = "admin-meta";
+        const dates = [item.startDate, item.endDate].filter(Boolean).join(" → ");
+        meta.textContent = [item.level || "", dates || "Tanpa tanggal", item.entriesCount ? item.entriesCount + " peserta" : ""]
+          .filter(Boolean)
+          .join(" · ");
+
+        li.appendChild(title);
+        li.appendChild(meta);
+        compListEl.appendChild(li);
+      });
+
+      if (compListEmpty) compListEmpty.hidden = items.length > 0;
+      if (compListCount) {
+        compListCount.textContent = items.length
+          ? items.length + " lomba terdaftar."
+          : "Belum ada lomba.";
+      }
+    } catch (err) {
+      if (compListCount) compListCount.textContent = "Tidak dapat memuat daftar lomba.";
+    }
+  }
+
+  /* ---------- Monitoring jurnal siswa ---------- */
+  const JURNAL_STATUS_LABEL = {
+    reading: "Membaca",
+    finished: "Selesai",
+  };
+
+  async function loadJurnal() {
+    if (!jurnalListEl) return;
+    try {
+      const result = await fetchJson("/api/progress?admin=1");
+      if (!result.ok) {
+        jurnalListEl.innerHTML = "";
+        if (jurnalListEmpty) jurnalListEmpty.hidden = true;
+        if (jurnalListCount) {
+          if (result.status === 401) {
+            jurnalListCount.textContent = "Silakan masuk kembali untuk melihat jurnal.";
+          } else if (result.status === 403) {
+            jurnalListCount.textContent = "Akses ditolak: khusus admin.";
+          } else {
+            jurnalListCount.textContent = errorMessage(result.data && result.data.error);
+          }
+        }
+        return;
+      }
+      const items = Array.isArray(result.data && result.data.items) ? result.data.items : [];
+      jurnalListEl.innerHTML = "";
+
+      items.forEach(function (item) {
+        const li = document.createElement("li");
+        li.className = "admin-item";
+
+        const who = document.createElement("p");
+        who.className = "testi-quote";
+        who.textContent = [
+          item.userName || item.userEmail || "Siswa",
+          item.title || "(Tanpa judul)",
+        ].join(" — ");
+
+        const badge = document.createElement("span");
+        badge.className = "badge " + (item.status === "finished" ? "badge-approved" : "badge-pending");
+        badge.textContent = JURNAL_STATUS_LABEL[item.status] || item.status || "";
+
+        const meta = document.createElement("p");
+        meta.className = "admin-meta";
+        meta.textContent = [
+          item.userEmail || "",
+          Number(item.percent) + "%",
+          item.pages ? item.pages + " hal" : "",
+          item.readDate || "",
+        ]
+          .filter(Boolean)
+          .join(" · ");
+
+        li.appendChild(who);
+        li.appendChild(badge);
+        li.appendChild(meta);
+
+        if (item.note) {
+          const note = document.createElement("p");
+          note.className = "admin-meta";
+          note.textContent = truncateText(item.note, 140);
+          li.appendChild(note);
+        }
+
+        jurnalListEl.appendChild(li);
+      });
+
+      if (jurnalListEmpty) jurnalListEmpty.hidden = items.length > 0;
+      if (jurnalListCount) {
+        jurnalListCount.textContent = items.length
+          ? items.length + " catatan jurnal (maks. 200 terbaru)."
+          : "Belum ada catatan jurnal.";
+      }
+    } catch (err) {
+      if (jurnalListCount) jurnalListCount.textContent = "Tidak dapat memuat jurnal siswa.";
     }
   }
 
@@ -323,7 +514,7 @@
           classForm.reset();
           classForm.elements.level.value = "semua";
           classForm.elements.capacity.value = "20";
-          await loadStats();
+          await Promise.all([loadClasses(), loadStats()]);
         } else {
           setStatus(classStatus, errorMessage(result.data && result.data.error), true);
         }
@@ -364,7 +555,7 @@
           setStatus(compStatus, "✅ Lomba tersimpan.", false);
           compForm.reset();
           compForm.elements.level.value = "semua";
-          await loadStats();
+          await Promise.all([loadCompetitions(), loadStats()]);
         } else {
           setStatus(compStatus, errorMessage(result.data && result.data.error), true);
         }
@@ -526,7 +717,14 @@
     hideAlert();
     if (metaEl) metaEl.textContent = [user.name, user.email].filter(Boolean).join(" · ");
 
-    await Promise.all([loadStats(), loadBooks(), loadTestimonials()]);
+    await Promise.all([
+      loadStats(),
+      loadBooks(),
+      loadTestimonials(),
+      loadClasses(),
+      loadCompetitions(),
+      loadJurnal(),
+    ]);
   }
 
   if (logoutBtn) {

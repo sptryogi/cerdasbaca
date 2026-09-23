@@ -35,7 +35,6 @@
       </a>
       <div class="dash-nav">
         <a href="index.html" class="btn btn-ghost">Beranda</a>
-        <a href="dashboard.html" class="btn btn-outline">Dashboard</a>
         <button type="button" id="btn-logout" class="btn btn-primary">Keluar</button>
       </div>
     </nav>
@@ -49,11 +48,21 @@
     <section class="dash-hero" aria-labelledby="admin-title">
       <p class="section-kicker">Panel Admin</p>
       <h1 id="admin-title">Kelola Data Program <span aria-hidden="true">🛠️</span></h1>
+      <p class="dash-card-sub">Pusat kelola buku, kelas, lomba, jurnal siswa, dan testimoni dalam satu halaman.</p>
       <p class="dash-meta" id="admin-meta">Memuat data admin…</p>
+      <nav class="admin-jumps" aria-label="Lompat ke bagian">
+        <a href="#statistik">Statistik</a>
+        <a href="#perpustakaan">Perpustakaan</a>
+        <a href="#kelas">Kelas</a>
+        <a href="#lomba">Lomba</a>
+        <a href="#jurnal">Jurnal</a>
+        <a href="#testimoni">Testimoni</a>
+      </nav>
     </section>
 
     <!-- Statistik -->
-    <ul class="dash-stats" id="admin-stats" role="list" aria-label="Statistik program" hidden>
+    <section id="statistik" aria-label="Statistik program">
+      <ul class="dash-stats" id="admin-stats" role="list" aria-label="Statistik program" hidden>
       <li class="dash-stat"><span class="dash-stat-num" id="st-users">0</span><span class="dash-stat-label">Pengguna</span></li>
       <li class="dash-stat"><span class="dash-stat-num" id="st-books">0</span><span class="dash-stat-label">Buku</span></li>
       <li class="dash-stat"><span class="dash-stat-num" id="st-classes">0</span><span class="dash-stat-label">Kelas</span></li>
@@ -62,11 +71,12 @@
       <li class="dash-stat"><span class="dash-stat-num" id="st-entries">0</span><span class="dash-stat-label">Peserta lomba</span></li>
       <li class="dash-stat"><span class="dash-stat-num" id="st-testimonials">0</span><span class="dash-stat-label">Testimoni</span></li>
       <li class="dash-stat"><span class="dash-stat-num" id="st-pending">0</span><span class="dash-stat-label">Testimoni pending</span></li>
-    </ul>
+      </ul>
+    </section>
 
     <div class="dash-grid">
       <!-- Tambah buku -->
-      <section class="dash-card" aria-labelledby="book-form-title">
+      <section class="dash-card" id="perpustakaan" aria-labelledby="book-form-title">
         <h2 id="book-form-title">Tambah Buku</h2>
         <p class="dash-card-sub">Buku baru langsung tampil di halaman Perpustakaan Digital.</p>
         <form id="book-form" action="#" method="get">
@@ -114,7 +124,7 @@
       </section>
 
       <!-- Tambah kelas -->
-      <section class="dash-card" aria-labelledby="class-form-title">
+      <section class="dash-card" id="form-kelas" aria-labelledby="class-form-title">
         <h2 id="class-form-title">Tambah Kelas Membaca</h2>
         <p class="dash-card-sub">Kelas baru langsung tampil di halaman Kelas Membaca.</p>
         <form id="class-form" action="#" method="get">
@@ -157,7 +167,7 @@
       </section>
 
       <!-- Tambah lomba -->
-      <section class="dash-card" aria-labelledby="comp-form-title">
+      <section class="dash-card" id="form-lomba" aria-labelledby="comp-form-title">
         <h2 id="comp-form-title">Tambah Lomba Baca</h2>
         <p class="dash-card-sub">Lomba baru langsung tampil di halaman Lomba Baca.</p>
         <form id="comp-form" action="#" method="get">
@@ -197,8 +207,32 @@
         </form>
       </section>
 
+      <!-- Daftar kelas -->
+      <section class="dash-card" id="kelas" aria-labelledby="classlist-title">
+        <h2 id="classlist-title">Daftar Kelas</h2>
+        <p class="dash-card-sub" id="classlist-count">Memuat daftar kelas…</p>
+        <ul class="admin-list" id="class-list" role="list"></ul>
+        <p class="pg-empty" id="classlist-empty" hidden>Belum ada kelas.</p>
+      </section>
+
+      <!-- Daftar lomba -->
+      <section class="dash-card" id="lomba" aria-labelledby="complist-title">
+        <h2 id="complist-title">Daftar Lomba</h2>
+        <p class="dash-card-sub" id="complist-count">Memuat daftar lomba…</p>
+        <ul class="admin-list" id="comp-list" role="list"></ul>
+        <p class="pg-empty" id="complist-empty" hidden>Belum ada lomba.</p>
+      </section>
+
+      <!-- Monitoring jurnal -->
+      <section class="dash-card" id="jurnal" aria-labelledby="jurnallist-title">
+        <h2 id="jurnallist-title">Monitoring Jurnal Siswa</h2>
+        <p class="dash-card-sub" id="jurnallist-count">Memuat jurnal siswa…</p>
+        <ul class="admin-list" id="jurnal-list" role="list"></ul>
+        <p class="pg-empty" id="jurnallist-empty" hidden>Belum ada catatan jurnal.</p>
+      </section>
+
       <!-- Testimoni -->
-      <section class="dash-card" aria-labelledby="testi-title">
+      <section class="dash-card" id="testimoni" aria-labelledby="testi-title">
         <h2 id="testi-title">Moderasi Testimoni</h2>
         <p class="dash-card-sub" id="testi-count">Memuat testimoni…</p>
         <ul class="testi-list" id="testi-list" role="list"></ul>
@@ -206,7 +240,7 @@
       </section>
 
       <!-- Daftar buku -->
-      <section class="dash-card" aria-labelledby="booklist-title">
+      <section class="dash-card" id="katalog" aria-labelledby="booklist-title">
         <h2 id="booklist-title">Katalog Buku</h2>
         <p class="dash-card-sub" id="booklist-count">Memuat katalog…</p>
         <ul class="admin-list" id="book-list" role="list"></ul>

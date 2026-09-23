@@ -1,6 +1,7 @@
-/* /api/progress — jurnal & progres baca milik pengguna yang sedang masuk.
-   GET  → daftar progres (termasuk note & read_date)
-   POST → tambah / perbarui progres per judul (jurnal baca)
+/* /api/progress — jurnal & progres baca.
+   GET              → daftar progres milik user login (note & read_date)
+   GET ?admin=1     → admin: progres semua siswa (+ nama & email)
+   POST             → tambah / perbarui progres per judul (jurnal baca)
 */
 
 "use strict";
@@ -11,6 +12,7 @@ const {
   sendApiError,
   toRows,
   requireUser,
+  requireAdmin,
 } = require("../lib/db");
 
 function send(res, status, body) {
@@ -32,7 +34,7 @@ function readJsonBody(req) {
 
 function mapProgress(row) {
   if (!row) return null;
-  return {
+  const item = {
     id: row.id,
     title: row.title,
     status: row.status,
@@ -42,6 +44,13 @@ function mapProgress(row) {
     readDate: row.read_date || null,
     updatedAt: row.updated_at || row.updatedAt || null,
   };
+  // Field tambahan hanya pada mode admin (bila ikut di-SELECT).
+  if (row.user_name !== undefined) {
+    item.userName = row.user_name || "";
+    item.userEmail = row.user_email || "";
+    item.userId = row.user_id;
+  }
+  return item;
 }
 
 function toIntInRange(value, min, max, fallback) {
@@ -68,10 +77,32 @@ module.exports = async function handler(req, res) {
 
   try {
     await initDb();
-    const user = await requireUser(req);
     const sql = getSql();
 
     if (req.method === "GET") {
+      const isAdminScope =
+        req.query &&
+        (req.query.admin === "1" ||
+          req.query.admin === "true" ||
+          req.query.scope === "admin");
+
+      if (isAdminScope) {
+        // Khusus admin: jurnal seluruh siswa (untuk monitoring panel).
+        await requireAdmin(req);
+        const rows = toRows(await sql`
+          SELECT p.id, p.user_id, p.title, p.status, p.pages, p.percent,
+                 p.note, p.read_date, p.updated_at,
+                 u.name  AS user_name,
+                 u.email AS user_email
+          FROM reading_progress p
+          JOIN users u ON u.id = p.user_id
+          ORDER BY p.updated_at DESC, p.id DESC
+          LIMIT 200
+        `);
+        return send(res, 200, { items: rows.map(mapProgress), scope: "admin" });
+      }
+
+      const user = await requireUser(req);
       const rows = toRows(await sql`
         SELECT id, title, status, pages, percent, note, read_date, updated_at
         FROM reading_progress
@@ -81,7 +112,8 @@ module.exports = async function handler(req, res) {
       return send(res, 200, { items: rows.map(mapProgress) });
     }
 
-    // POST — validasi input
+    // POST — wajib login + validasi input
+    const user = await requireUser(req);
     const body = readJsonBody(req);
     const title = String(body.title || "").trim();
     const status = String(body.status || "reading").trim().toLowerCase();

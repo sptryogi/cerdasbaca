@@ -3,7 +3,7 @@
    - Cek sesi via GET /api/me (401 → kembali ke beranda)
    - Muat & simpan progres baca via /api/progress
    - Keluar via POST /api/logout
-   - Link Admin hanya dirender bila GET /api/me → role === "admin"
+   - Admin yang membuka dashboard siswa dialihkan ke panel admin
    ============================================================ */
 
 (function () {
@@ -25,7 +25,6 @@
   const emptyEl = document.getElementById("progress-empty");
   const listCount = document.getElementById("list-count");
   const logoutBtn = document.getElementById("btn-logout");
-  const adminLink = document.getElementById("link-admin");
   const testiForm = document.getElementById("testi-form");
   const testiStatus = document.getElementById("testi-status");
 
@@ -105,21 +104,6 @@
         user.school,
       ].filter(Boolean);
       metaEl.textContent = parts.join(" · ");
-    }
-
-    // Link Admin: default di HTML sudah hidden; hanya tampil untuk role === "admin".
-    // Untuk user biasa: element DIHAPUS dari DOM (bukan sekadar disembunyikan CSS)
-    // agar tidak mungkin bocor.
-    if (adminLink) {
-      const role = user && user.role;
-      if (role === "admin") {
-        adminLink.hidden = false;
-      } else if (typeof adminLink.remove === "function") {
-        adminLink.remove();
-      } else {
-        adminLink.hidden = true;
-        if (adminLink.parentNode) adminLink.parentNode.removeChild(adminLink);
-      }
     }
   }
 
@@ -314,7 +298,13 @@
     }
 
     hideAlert();
-    renderUser(me.data.user || {});
+    const user = me.data.user || {};
+    // Admin tidak pakai dashboard siswa — langsung ke panel kelola.
+    if (user.role === "admin") {
+      window.location.replace("admin.html");
+      return;
+    }
+    renderUser(user);
     await loadProgress();
   }
 
