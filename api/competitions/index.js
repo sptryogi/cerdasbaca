@@ -1,6 +1,7 @@
 /* /api/competitions — lomba baca.
    GET  → daftar publik (+ registered bila login)
-   POST → admin: buat lomba
+   POST → admin: buat lomba (tanpa field action)
+        → login + body.action="register" + competition_id: daftar lomba
 */
 
 "use strict";
@@ -12,9 +13,10 @@ const {
   toRows,
   getSessionToken,
   getUserFromRequest,
+  requireUser,
   requireAdmin,
   httpError,
-} = require("../lib/db");
+} = require("../../lib/db");
 
 const LEVELS = ["sd", "smp", "sma", "semua"];
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -95,7 +97,8 @@ async function handleGet(req, res) {
   return send(res, 200, { items: rows.map(mapCompetition) });
 }
 
-async function handlePost(req, res) {
+/** POST tanpa action → admin: buat lomba. */
+async function handleCreate(req, res) {
   await requireAdmin(req);
   const sql = getSql();
   const body = readJsonBody(req);
@@ -127,12 +130,59 @@ async function handlePost(req, res) {
   });
 }
 
+/** POST action=register → daftar lomba (login). */
+async function handleRegister(req, res) {
+  const user = await requireUser(req);
+  const sql = getSql();
+
+  const body = readJsonBody(req);
+  const competitionId = Number(body.competition_id);
+  if (!Number.isInteger(competitionId) || competitionId < 1) {
+    throw httpError(400, "competition_id tidak valid.");
+  }
+
+  const comp = toRows(await sql`
+    SELECT id, end_date FROM competitions WHERE id = ${competitionId}
+  `)[0];
+  if (!comp) throw httpError(404, "Lomba tidak ditemukan.");
+
+  // Tolak pendaftaran bila sudah lewat tanggal akhir.
+  const open = toRows(await sql`
+    SELECT id FROM competitions
+    WHERE id = ${competitionId}
+      AND (end_date IS NULL OR end_date >= CURRENT_DATE)
+  `)[0];
+  if (!open) throw httpError(409, "Pendaftaran lomba sudah ditutup.");
+
+  const inserted = toRows(await sql`
+    INSERT INTO competition_entries (competition_id, user_id)
+    VALUES (${competitionId}, ${user.id})
+    ON CONFLICT (competition_id, user_id) DO NOTHING
+    RETURNING id
+  `);
+  if (!inserted.length) {
+    throw httpError(409, "Anda sudah terdaftar di lomba ini.");
+  }
+
+  const count = toRows(await sql`
+    SELECT COUNT(*)::int AS n FROM competition_entries WHERE competition_id = ${competitionId}
+  `)[0];
+
+  return send(res, 201, {
+    ok: true,
+    entriesCount: Number(count && count.n) || 0,
+  });
+}
+
 module.exports = async function handler(req, res) {
   try {
     if (req.method === "GET") return await handleGet(req, res);
     if (req.method === "POST") {
       await initDb();
-      return await handlePost(req, res);
+      const body = readJsonBody(req);
+      const action = String(body.action || "").trim().toLowerCase();
+      if (action === "register") return await handleRegister(req, res);
+      return await handleCreate(req, res);
     }
     res.setHeader("Allow", "GET, POST");
     return send(res, 405, { error: "Metode tidak diizinkan." });

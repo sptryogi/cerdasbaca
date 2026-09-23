@@ -4,7 +4,7 @@
    - Statistik via GET /api/admin/stats
    - CRUD buku via /api/books (POST/PUT/DELETE)
    - Kelas & lomba via POST /api/classes, /api/competitions
-   - Moderasi testimoni via GET /api/testimonials/admin + PUT
+   - Moderasi testimoni via GET /api/testimonials?admin=1 + PUT
    Render memakai textContent / createElement (anti-XSS).
    ============================================================ */
 
@@ -392,7 +392,7 @@
   async function loadTestimonials() {
     if (!testiListEl) return;
     try {
-      const result = await fetchJson("/api/testimonials/admin");
+      const result = await fetchJson("/api/testimonials?admin=1");
       if (!result.ok) {
         testiListEl.innerHTML = "";
         if (testiCount) testiCount.textContent = errorMessage(result.data && result.data.error);

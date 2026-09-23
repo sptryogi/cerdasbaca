@@ -1,7 +1,7 @@
 /* ============================================================
    CerdasBaca — Lomba Baca
    - Muat daftar lomba via GET /api/competitions
-   - Daftar lomba via POST /api/competitions/register
+   - Daftar lomba via POST /api/competitions (action=register)
    Render memakai textContent / createElement (anti-XSS).
    ============================================================ */
 
@@ -131,10 +131,10 @@
     hideAlert();
     if (button) button.disabled = true;
     try {
-      const result = await fetchJson("/api/competitions/register", {
+      const result = await fetchJson("/api/competitions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ competition_id: competitionId }),
+        body: JSON.stringify({ action: "register", competition_id: competitionId }),
       });
       if (result.ok) {
         showAlert("✅ Pendaftaran lomba berhasil!", false);

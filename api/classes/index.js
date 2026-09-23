@@ -1,6 +1,8 @@
 /* /api/classes — kelas membaca.
-   GET  → daftar publik + seats_taken (+ enrolled bila login)
-   POST → admin: buat kelas
+   GET    → daftar publik + seats_taken (+ enrolled bila login)
+   POST   → admin: buat kelas (tanpa field action)
+          → login + body.action="enroll": ikuti kelas (tolak bila penuh/duplikat)
+   DELETE → login: batal ikut kelas (class_id dari body atau query)
 */
 
 "use strict";
@@ -12,9 +14,10 @@ const {
   toRows,
   getSessionToken,
   getUserFromRequest,
+  requireUser,
   requireAdmin,
   httpError,
-} = require("../lib/db");
+} = require("../../lib/db");
 
 const LEVELS = ["sd", "smp", "sma", "semua"];
 
@@ -59,6 +62,20 @@ function mapClass(row) {
   };
 }
 
+/** class_id dari body, fallback ke query string. */
+function classIdFrom(req) {
+  const body = readJsonBody(req);
+  const raw =
+    body.class_id !== undefined && body.class_id !== null && body.class_id !== ""
+      ? body.class_id
+      : req.query && req.query.class_id;
+  const n = Number(raw);
+  if (!Number.isInteger(n) || n < 1) {
+    throw httpError(400, "class_id tidak valid.");
+  }
+  return n;
+}
+
 async function handleGet(req, res) {
   await initDb();
   const sql = getSql();
@@ -86,7 +103,8 @@ async function handleGet(req, res) {
   return send(res, 200, { items: rows.map(mapClass) });
 }
 
-async function handlePost(req, res) {
+/** POST tanpa action → admin: buat kelas. */
+async function handleCreate(req, res) {
   await requireAdmin(req);
   const sql = getSql();
   const body = readJsonBody(req);
@@ -118,14 +136,81 @@ async function handlePost(req, res) {
   });
 }
 
+/** Ambil kelas; 404 bila tidak ada. */
+async function loadClassOr404(classId) {
+  const sql = getSql();
+  const kelas = toRows(await sql`
+    SELECT id, capacity FROM reading_classes WHERE id = ${classId}
+  `)[0];
+  if (!kelas) throw httpError(404, "Kelas tidak ditemukan.");
+  return kelas;
+}
+
+/** POST action=enroll → ikuti kelas (login). */
+async function handleEnroll(req, res) {
+  const user = await requireUser(req);
+  const sql = getSql();
+  const classId = classIdFrom(req);
+  await loadClassOr404(classId);
+
+  // Insert atomik: hanya sisipkan bila masih ada kursi kosong.
+  const inserted = toRows(await sql`
+    INSERT INTO class_enrollments (class_id, user_id)
+    SELECT ${classId}, ${user.id}
+    WHERE (
+      SELECT COUNT(*) FROM class_enrollments WHERE class_id = ${classId}
+    ) < (
+      SELECT capacity FROM reading_classes WHERE id = ${classId}
+    )
+    ON CONFLICT (class_id, user_id) DO NOTHING
+    RETURNING id
+  `);
+  if (!inserted.length) {
+    const already = toRows(await sql`
+      SELECT 1 FROM class_enrollments
+      WHERE class_id = ${classId} AND user_id = ${user.id}
+    `)[0];
+    if (already) {
+      throw httpError(409, "Anda sudah terdaftar di kelas ini.");
+    }
+    throw httpError(409, "Kelas sudah penuh.");
+  }
+  return send(res, 201, { ok: true });
+}
+
+/** DELETE → batal ikut kelas (login). */
+async function handleUnenroll(req, res) {
+  const user = await requireUser(req);
+  const sql = getSql();
+  const classId = classIdFrom(req);
+  await loadClassOr404(classId);
+
+  const deleted = toRows(await sql`
+    DELETE FROM class_enrollments
+    WHERE class_id = ${classId} AND user_id = ${user.id}
+    RETURNING id
+  `);
+  if (!deleted.length) {
+    throw httpError(404, "Anda belum terdaftar di kelas ini.");
+  }
+  return send(res, 200, { ok: true });
+}
+
 module.exports = async function handler(req, res) {
   try {
     if (req.method === "GET") return await handleGet(req, res);
     if (req.method === "POST") {
       await initDb();
-      return await handlePost(req, res);
+      const body = readJsonBody(req);
+      const action = String(body.action || "").trim().toLowerCase();
+      if (action === "enroll") return await handleEnroll(req, res);
+      return await handleCreate(req, res);
     }
-    res.setHeader("Allow", "GET, POST");
+    if (req.method === "DELETE") {
+      await initDb();
+      return await handleUnenroll(req, res);
+    }
+    res.setHeader("Allow", "GET, POST, DELETE");
     return send(res, 405, { error: "Metode tidak diizinkan." });
   } catch (err) {
     sendApiError(res, err);

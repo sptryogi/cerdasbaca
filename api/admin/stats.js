@@ -8,7 +8,7 @@ const {
   sendApiError,
   toRows,
   requireAdmin,
-} = require("../lib/db");
+} = require("../../lib/db");
 
 function send(res, status, body) {
   res.status(status).json(body);

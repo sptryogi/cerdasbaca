@@ -1,7 +1,8 @@
 /* /api/testimonials — testimoni (publik approved + submit user + aksi admin).
-   GET    → hanya status approved (untuk landing)
-   POST   → login: kirim testimoni (status pending)
-   PUT    → admin: approve / reject
+   GET          → hanya status approved (untuk landing)
+   GET ?admin=1 → admin: semua status (+ email)
+   POST         → login: kirim testimoni (status pending)
+   PUT          → admin: approve / reject
 */
 
 "use strict";
@@ -14,7 +15,7 @@ const {
   requireUser,
   requireAdmin,
   httpError,
-} = require("../lib/db");
+} = require("../../lib/db");
 
 const ROLE_LABELS = ["siswa", "guru", "orang tua", "lainnya", ""];
 
@@ -35,21 +36,51 @@ function readJsonBody(req) {
   return body;
 }
 
-function mapTestimonial(row) {
+/** Scope admin pada GET: ?admin=1 / ?admin=true / ?scope=admin */
+function isAdminScope(req) {
+  const q = req.query || {};
+  return q.admin === "1" || q.admin === "true" || q.scope === "admin";
+}
+
+function mapTestimonial(row, opts) {
   if (!row) return null;
-  return {
+  const item = {
     id: row.id,
     quote: row.quote,
     roleLabel: row.role_label || "",
     status: row.status,
     name: row.name || null,
-    createdAt: row.created_at || null,
   };
+  if (opts && opts.admin) item.email = row.email || null;
+  item.createdAt = row.created_at || null;
+  return item;
 }
 
 async function handleGet(req, res) {
   await initDb();
   const sql = getSql();
+
+  if (isAdminScope(req)) {
+    // Admin: semua status, urutkan pending lebih dulu, sertakan email.
+    await requireAdmin(req);
+    const rows = toRows(await sql`
+      SELECT t.id, t.quote, t.role_label, t.status, t.created_at,
+             u.name, u.email
+      FROM testimonials t
+      LEFT JOIN users u ON u.id = t.user_id
+      ORDER BY
+        CASE t.status WHEN 'pending' THEN 0 WHEN 'approved' THEN 1 ELSE 2 END,
+        t.created_at DESC, t.id DESC
+      LIMIT 200
+    `);
+    return send(res, 200, {
+      items: rows.map(function (row) {
+        return mapTestimonial(row, { admin: true });
+      }),
+    });
+  }
+
+  // Publik: hanya approved.
   const rows = toRows(await sql`
     SELECT t.id, t.quote, t.role_label, t.status, t.created_at,
            u.name

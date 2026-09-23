@@ -1,7 +1,7 @@
 /* ============================================================
    CerdasBaca — Kelas Membaca
    - Muat daftar kelas via GET /api/classes
-   - Daftar / batal via POST & DELETE /api/classes/enroll
+   - Daftar / batal via POST (action=enroll) & DELETE /api/classes
    Render memakai textContent / createElement (anti-XSS).
    ============================================================ */
 
@@ -127,10 +127,13 @@
       const options = {
         method: isEnroll ? "POST" : "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ class_id: classId }),
+        body: JSON.stringify({
+          action: isEnroll ? "enroll" : "unenroll",
+          class_id: classId,
+        }),
       };
       const qs = "?class_id=" + encodeURIComponent(classId);
-      const result = await fetchJson("/api/classes/enroll" + qs, options);
+      const result = await fetchJson("/api/classes" + qs, options);
       if (result.ok) {
         showAlert(isEnroll ? "✅ Berhasil mendaftar kelas." : "Pendaftaran dibatalkan.", false);
         await loadClasses();
