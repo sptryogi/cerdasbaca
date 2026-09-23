@@ -2,8 +2,8 @@
   "name": "cerdasbaca",
   "version": "1.0.0",
   "private": true,
-  "description": "CerdasBaca — landing page literasi baca + API autentikasi (Vercel Postgres)",
+  "description": "CerdasBaca — landing page literasi baca + API autentikasi (Neon Serverless Driver)",
   "dependencies": {
-    "@vercel/postgres": "^0.10.0"
+    "@neondatabase/serverless": "^0.10.4"
   }
 }

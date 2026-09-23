@@ -8,7 +8,6 @@
   <title>Panel Admin — CerdasBaca</title>
 
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="favicon.svg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -108,7 +107,8 @@
               <input type="text" id="bk-color" name="cover_color" maxlength="7" value="#4361ee" pattern="^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$">
             </div>
           </div>
-          <button type="submit" class="btn btn-primary btn-block">Simpan Buku</button>
+          <button type="submit" class="btn btn-primary btn-block" id="book-submit-btn">Simpan Buku</button>
+          <button type="button" class="btn btn-outline btn-block" id="book-cancel-edit" hidden>Batal Edit</button>
           <p class="form-status" id="book-status" role="status" aria-live="polite"></p>
         </form>
       </section>

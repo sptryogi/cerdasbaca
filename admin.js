@@ -20,6 +20,9 @@
 
   const bookForm = document.getElementById("book-form");
   const bookStatus = document.getElementById("book-status");
+  const bookFormTitle = document.getElementById("book-form-title");
+  const bookSubmitBtn = document.getElementById("book-submit-btn");
+  const bookCancelEditBtn = document.getElementById("book-cancel-edit");
   const classForm = document.getElementById("class-form");
   const classStatus = document.getElementById("class-status");
   const compForm = document.getElementById("comp-form");
@@ -110,6 +113,48 @@
   }
 
   /* ---------- Katalog buku ---------- */
+  let editingBookId = null;
+
+  /** Mode tambah: kosongkan form & sembunyikan tombol batal. */
+  function resetBookForm() {
+    editingBookId = null;
+    if (!bookForm) return;
+    bookForm.reset();
+    bookForm.elements.cover_emoji.value = "📘";
+    bookForm.elements.cover_color.value = "#4361ee";
+    bookForm.elements.level.value = "semua";
+    bookForm.elements.pages.value = "0";
+    if (bookFormTitle) bookFormTitle.textContent = "Tambah Buku";
+    if (bookSubmitBtn) bookSubmitBtn.textContent = "Simpan Buku";
+    if (bookCancelEditBtn) bookCancelEditBtn.hidden = true;
+    setStatus(bookStatus, "", false);
+  }
+
+  /** Mode edit: isi form dari data buku lalu tunggu submit → PUT. */
+  function startEditBook(book) {
+    if (!bookForm || !book) return;
+    editingBookId = book.id;
+    bookForm.elements.title.value = book.title || "";
+    bookForm.elements.author.value = book.author || "";
+    bookForm.elements.description.value = book.description || "";
+    bookForm.elements.level.value = book.level || "semua";
+    bookForm.elements.pages.value = String(book.pages || 0);
+    bookForm.elements.cover_emoji.value = book.coverEmoji || "📘";
+    bookForm.elements.cover_color.value = book.coverColor || "#4361ee";
+    if (bookFormTitle) bookFormTitle.textContent = "Ubah Buku";
+    if (bookSubmitBtn) bookSubmitBtn.textContent = "Simpan Perubahan";
+    if (bookCancelEditBtn) bookCancelEditBtn.hidden = false;
+    setStatus(bookStatus, "Mode ubah: " + (book.title || "buku tanpa judul"), false);
+    bookForm.scrollIntoView({ block: "nearest" });
+    bookForm.elements.title.focus();
+  }
+
+  if (bookCancelEditBtn) {
+    bookCancelEditBtn.addEventListener("click", function () {
+      resetBookForm();
+    });
+  }
+
   async function loadBooks() {
     if (!bookListEl) return;
     try {
@@ -142,6 +187,15 @@
 
         const actions = document.createElement("div");
         actions.className = "admin-actions";
+
+        const editBtn = document.createElement("button");
+        editBtn.type = "button";
+        editBtn.className = "btn btn-outline";
+        editBtn.textContent = "Edit";
+        editBtn.addEventListener("click", function () {
+          startEditBook(book);
+        });
+        actions.appendChild(editBtn);
 
         const delBtn = document.createElement("button");
         delBtn.type = "button";
@@ -179,6 +233,8 @@
         body: JSON.stringify({ id: id }),
       });
       if (result.ok) {
+        // Bila buku yang sedang diedit ikut terhapus → kembali ke mode tambah
+        if (editingBookId === id) resetBookForm();
         await loadBooks();
         await loadStats();
       } else {
@@ -210,19 +266,20 @@
         cover_color: String(bookForm.elements.cover_color.value || "#4361ee").trim(),
       };
 
+      const isEdit = editingBookId !== null;
+      if (isEdit) {
+        payload.id = editingBookId;
+      }
+
       const button = bookForm.querySelector('button[type="submit"]');
       if (button) button.disabled = true;
       setStatus(bookStatus, "Menyimpan…", false);
 
       try {
-        const result = await postJson("/api/books", payload, "POST");
+        const result = await postJson("/api/books", payload, isEdit ? "PUT" : "POST");
         if (result.ok) {
-          setStatus(bookStatus, "✅ Buku tersimpan.", false);
-          bookForm.reset();
-          bookForm.elements.cover_emoji.value = "📘";
-          bookForm.elements.cover_color.value = "#4361ee";
-          bookForm.elements.level.value = "semua";
-          bookForm.elements.pages.value = "0";
+          setStatus(bookStatus, isEdit ? "✅ Buku diperbarui." : "✅ Buku tersimpan.", false);
+          resetBookForm();
           await loadBooks();
           await loadStats();
         } else {

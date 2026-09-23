@@ -14,14 +14,13 @@
   <meta property="og:title" content="CerdasBaca — Program Literasi Baca untuk Anak Sekolah">
   <meta property="og:description" content="Program literasi baca terpadu untuk SD, SMP, dan SMA: kelas membaca, lomba baca, perpustakaan digital, dan jurnal baca.">
   <meta property="og:url" content="https://cerdasbaca.vercel.app/">
-  <!-- Siapkan aset 1200×630 lalu uncomment baris berikut:
+  <!-- Siapkan aset 1200×630 lalu uncomment baris berikut (jangan link ke file yang belum ada):
   <meta property="og:image" content="https://cerdasbaca.vercel.app/og.png"> -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="CerdasBaca — Program Literasi Baca untuk Anak Sekolah">
   <meta name="twitter:description" content="Program literasi baca terpadu untuk SD, SMP, dan SMA.">
 
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="favicon.svg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -497,6 +496,7 @@
 
           <form class="contact-form" id="contact-form" action="#" method="get">
             <h3>Kirim Pesan</h3>
+            <p class="form-status" id="contact-demo-note">Formulir demo — pesan tidak dikirim ke server (belum ada backend kontak).</p>
 
             <div class="form-field">
               <label for="cf-nama">Nama Lengkap</label>
@@ -583,7 +583,7 @@
       <h2 id="login-title">Masuk ke CerdasBaca</h2>
       <p class="modal-sub">Gunakan akun sekolah atau akun pribadi Anda.</p>
 
-      <form id="login-form" action="#" method="get">
+      <form id="login-form" action="#" method="post">
         <div class="form-field">
           <label for="login-email">Email</label>
           <input type="email" id="login-email" name="email" autocomplete="email" placeholder="nama@sekolah.sch.id" required>
@@ -593,6 +593,9 @@
           <input type="password" id="login-password" name="password" autocomplete="current-password" placeholder="••••••••" minlength="6" required>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Masuk</button>
+        <noscript>
+          <p class="form-status">Aktifkan JavaScript untuk masuk/daftar.</p>
+        </noscript>
         <p class="form-status" id="login-status" role="status" aria-live="polite"></p>
       </form>
 
@@ -611,7 +614,7 @@
       <h2 id="daftar-title">Daftar Gratis</h2>
       <p class="modal-sub">Isi data singkat — tim kami menghubungi Anda dalam 1×24 jam.</p>
 
-      <form id="daftar-form" action="#" method="get">
+      <form id="daftar-form" action="#" method="post">
         <div class="form-field">
           <label for="daftar-nama">Nama Lengkap</label>
           <input type="text" id="daftar-nama" name="nama" autocomplete="name" placeholder="Nama Anda" required>
@@ -634,6 +637,9 @@
           <input type="password" id="daftar-password" name="password" autocomplete="new-password" placeholder="Min. 6 karakter" minlength="6" required>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Buat Akun</button>
+        <noscript>
+          <p class="form-status">Aktifkan JavaScript untuk masuk/daftar.</p>
+        </noscript>
         <p class="form-status" id="daftar-status" role="status" aria-live="polite"></p>
       </form>
 

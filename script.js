@@ -330,7 +330,11 @@
     });
   }
 
-  bindFakeForm("contact-form", "contact-status", "✅ Pesan diterima (demo).");
+  bindFakeForm(
+    "contact-form",
+    "contact-status",
+    "✅ Pesan dicatat (demo) — formulir contoh, tidak benar-benar terkirim."
+  );
 
   /* ---------- 7b. Form auth → API (/api/register, /api/login) ---------- */
   async function postJson(url, payload) {
