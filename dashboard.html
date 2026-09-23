@@ -20,9 +20,9 @@
 <body>
   <a class="skip-link" href="#konten-utama">Lewati ke konten utama</a>
 
-  <!-- ==================== HEADER ==================== -->
+  <!-- ==================== HEADER / NAVBAR DASHBOARD ==================== -->
   <header class="site-header">
-    <nav class="navbar container" aria-label="Navigasi utama">
+    <nav class="navbar container" aria-label="Navigasi dashboard">
       <a href="index.html" class="brand" aria-label="CerdasBaca — kembali ke beranda">
         <span class="brand-icon" aria-hidden="true">
           <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -34,13 +34,27 @@
         <span class="brand-name">Cerdas<strong>Baca</strong></span>
       </a>
 
-      <div class="dash-nav">
-        <a href="index.html" class="btn btn-ghost">Beranda</a>
-        <a href="perpustakaan.html" class="btn btn-outline">Perpustakaan</a>
-        <a href="kelas-membaca.html" class="btn btn-outline">Kelas</a>
-        <a href="lomba-baca.html" class="btn btn-outline">Lomba</a>
-        <a href="admin.html" class="btn btn-outline" id="link-admin" hidden>Admin</a>
-        <button type="button" id="btn-logout" class="btn btn-primary">Keluar</button>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Buka menu navigasi">
+        <svg class="icon-menu" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+        <svg class="icon-close" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+
+      <div class="nav-menu" id="nav-menu">
+        <ul class="nav-links" role="list">
+          <li><a href="perpustakaan.html">Perpustakaan</a></li>
+          <li><a href="kelas-membaca.html">Kelas Membaca</a></li>
+          <li><a href="lomba-baca.html">Lomba Baca</a></li>
+          <li><a href="#jurnal">Jurnal</a></li>
+          <!-- Tombol Admin: hidden by default; di-unhide oleh dashboard.js HANYA bila role === "admin". -->
+          <li id="link-admin" hidden><a href="admin.html">Admin</a></li>
+        </ul>
+        <div class="nav-auth">
+          <button type="button" id="btn-logout" class="btn btn-primary">Keluar</button>
+        </div>
       </div>
     </nav>
   </header>
@@ -80,8 +94,8 @@
     </ul>
 
     <div class="dash-grid">
-      <!-- Form catat bacaan -->
-      <section class="dash-card" aria-labelledby="form-title">
+      <!-- Form catat bacaan (jurnal) -->
+      <section class="dash-card" id="jurnal" aria-labelledby="form-title">
         <h2 id="form-title">Catat Bacaan</h2>
         <p class="dash-card-sub">Simpan judul yang sedang atau sudah kamu baca. Judul yang sama akan diperbarui.</p>
 

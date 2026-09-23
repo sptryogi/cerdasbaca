@@ -59,9 +59,6 @@
           <li><a href="#beranda">Beranda</a></li>
           <li><a href="#tentang">Tentang Program</a></li>
           <li><a href="#program">Program Literasi Baca</a></li>
-          <li><a href="kelas-membaca.html">Kelas Membaca</a></li>
-          <li><a href="lomba-baca.html">Lomba Baca</a></li>
-          <li><a href="perpustakaan.html">Perpustakaan</a></li>
           <li><a href="#manfaat">Manfaat</a></li>
           <li><a href="#testimoni">Testimoni</a></li>
           <li><a href="#kontak">Kontak</a></li>
@@ -494,9 +491,9 @@
             </div>
           </div>
 
-          <form class="contact-form" id="contact-form" action="#" method="get">
+          <form class="contact-form" id="contact-form" action="/api/contact" method="post">
             <h3>Kirim Pesan</h3>
-            <p class="form-status" id="contact-demo-note">Formulir demo — pesan tidak dikirim ke server (belum ada backend kontak).</p>
+            <p class="form-status" id="contact-demo-note">Pesan diteruskan ke tim kami melalui email.</p>
 
             <div class="form-field">
               <label for="cf-nama">Nama Lengkap</label>
@@ -520,6 +517,7 @@
 
             <button type="submit" class="btn btn-primary btn-block">Kirim Pesan</button>
             <p class="form-status" id="contact-status" role="status" aria-live="polite"></p>
+            <p class="form-status">Catatan: WhatsApp/telepon menyusul.</p>
           </form>
         </div>
       </div>
@@ -586,7 +584,9 @@
       <form id="login-form" action="#" method="post">
         <div class="form-field">
           <label for="login-email">Email</label>
-          <input type="email" id="login-email" name="email" autocomplete="email" placeholder="nama@sekolah.sch.id" required>
+          <!-- type=text agar akun admin bawaan "admin" (tanpa @) juga bisa masuk;
+               validasi format email ketat tetap dijalankan saat register. -->
+          <input type="text" id="login-email" name="email" autocomplete="username" inputmode="email" placeholder="nama@sekolah.sch.id" required>
         </div>
         <div class="form-field">
           <label for="login-password">Kata Sandi</label>

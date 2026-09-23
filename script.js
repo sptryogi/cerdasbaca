@@ -4,7 +4,7 @@
    - Smooth-scroll (fallback) & penanda section aktif
    - Modal Login / Daftar → API (/api/login, /api/register) → dashboard
    - Animasi counter statistik
-   - Form kontak (simulasi, tanpa endpoint)
+   - Form kontak → POST /api/contact (kirim email ke tim)
    ============================================================ */
 
 (function () {
@@ -307,15 +307,14 @@
     el.classList.toggle("is-error", Boolean(isError));
   }
 
-  // Form kontak: masih simulasi demo (belum ada endpoint).
-  function bindFakeForm(formId, statusId, successMessage) {
-    const form = document.getElementById(formId);
-    const status = document.getElementById(statusId);
+  // Form kontak → POST /api/contact (server meneruskan pesan ke email tim).
+  function bindContactForm() {
+    const form = document.getElementById("contact-form");
+    const status = document.getElementById("contact-status");
     if (!form) return;
 
-    form.addEventListener("submit", function (event) {
-      // m9: tanpa novalidate, browser memvalidasi dulu;
-      // cek ulang di sini sebagai jaring pengaman sebelum logic demo
+    form.addEventListener("submit", async function (event) {
+      // Browser memvalidasi dulu; cek ulang sebagai jaring pengaman.
       if (!form.checkValidity()) {
         event.preventDefault();
         setStatus(status, "Mohon lengkapi semua kolom yang wajib diisi.", true);
@@ -323,18 +322,61 @@
         return;
       }
 
-      // Valid — cegah navigasi bawaan, jalankan simulasi demo
       event.preventDefault();
-      setStatus(status, successMessage, false);
-      form.reset();
+
+      const button = form.querySelector('button[type="submit"]');
+      if (button) button.disabled = true;
+      setStatus(status, "Mengirim pesan…", false);
+
+      const payload = {
+        name: String((form.elements.nama && form.elements.nama.value) || "").trim(),
+        email: String((form.elements.email && form.elements.email.value) || "").trim(),
+        school: String((form.elements.sekolah && form.elements.sekolah.value) || "").trim(),
+        message: String((form.elements.pesan && form.elements.pesan.value) || "").trim(),
+      };
+
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify(payload),
+        });
+
+        let data = null;
+        try {
+          data = await res.json();
+        } catch (err) {
+          data = null;
+        }
+
+        // Pesan sukses yang jujur hanya bila API benar-benar merespons ok.
+        if (res.ok && data && data.ok) {
+          setStatus(status, "✅ " + (data.message || "Pesan terkirim ke tim kami."), false);
+          form.reset();
+        } else {
+          setStatus(
+            status,
+            (data && data.error) ||
+              (res.status === 503
+                ? "Layanan belum siap. Silakan coba lagi nanti."
+                : "Pesan gagal terkirim. Silakan coba lagi."),
+            true
+          );
+        }
+      } catch (err) {
+        setStatus(
+          status,
+          "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
+          true
+        );
+      }
+
+      if (button) button.disabled = false;
     });
   }
 
-  bindFakeForm(
-    "contact-form",
-    "contact-status",
-    "✅ Pesan dicatat (demo) — formulir contoh, tidak benar-benar terkirim."
-  );
+  bindContactForm();
 
   /* ---------- 7b. Form auth → API (/api/register, /api/login) ---------- */
   async function postJson(url, payload) {

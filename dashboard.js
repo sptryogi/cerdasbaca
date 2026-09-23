@@ -3,6 +3,7 @@
    - Cek sesi via GET /api/me (401 → kembali ke beranda)
    - Muat & simpan progres baca via /api/progress
    - Keluar via POST /api/logout
+   - Link Admin hanya dirender bila GET /api/me → role === "admin"
    ============================================================ */
 
 (function () {
@@ -105,7 +106,21 @@
       ].filter(Boolean);
       metaEl.textContent = parts.join(" · ");
     }
-    if (adminLink) adminLink.hidden = user.role !== "admin";
+
+    // Link Admin: default di HTML sudah hidden; hanya tampil untuk role === "admin".
+    // Untuk user biasa: element DIHAPUS dari DOM (bukan sekadar disembunyikan CSS)
+    // agar tidak mungkin bocor.
+    if (adminLink) {
+      const role = user && user.role;
+      if (role === "admin") {
+        adminLink.hidden = false;
+      } else if (typeof adminLink.remove === "function") {
+        adminLink.remove();
+      } else {
+        adminLink.hidden = true;
+        if (adminLink.parentNode) adminLink.parentNode.removeChild(adminLink);
+      }
+    }
   }
 
   /* ---------- Testimoni ---------- */
