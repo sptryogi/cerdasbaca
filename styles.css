@@ -85,6 +85,12 @@ button {
   font-family: inherit;
 }
 
+/* [hidden] harus selalu menang atas author CSS seperti .btn{display:inline-flex}
+   (mis. #btn-testi-more tetap terlihat walau atribut hidden ada). */
+[hidden] {
+  display: none !important;
+}
+
 :focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
@@ -864,6 +870,18 @@ button.btn {
   background: var(--accent);
 }
 
+/* Tombol "Lihat Testimoni Lain" + jumlah total (sembunyi bila ≤ 3) */
+.testi-more-wrap {
+  text-align: center;
+  margin-top: 1.25rem;
+}
+
+.testi-more-count {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0.5rem 0 0;
+}
+
 /* ---------- 11. FAQ ---------- */
 .faq-list {
   display: grid;
@@ -1147,6 +1165,21 @@ button.btn {
   padding: 1.75rem 1.5rem 1.5rem;
   box-shadow: var(--shadow-md);
   animation: modal-in 0.2s ease;
+}
+
+/* Modal lebar khusus daftar semua testimoni */
+.modal-card-wide {
+  width: min(720px, 100%);
+}
+
+/* Daftar testimoni di dalam modal — kartu quote-card pakai margin:0 agar rapi */
+.testi-modal-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.testi-modal-list .quote-card {
+  margin: 0;
 }
 
 @keyframes modal-in {

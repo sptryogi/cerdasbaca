@@ -307,6 +307,32 @@
     el.classList.toggle("is-error", Boolean(isError));
   }
 
+  // Fetch dengan timeout agar UI tidak hang bila server lambat/mati.
+  // AbortController membatalkan request setelah timeoutMs (default 10 dtk).
+  function fetchWithTimeout(url, options, timeoutMs) {
+    const opts = options || {};
+    const ms = timeoutMs || 10000;
+    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    const timer = controller
+      ? setTimeout(function () {
+          controller.abort();
+        }, ms)
+      : null;
+    const finalOpts = Object.assign({}, opts);
+    if (controller) finalOpts.signal = controller.signal;
+    return fetch(url, finalOpts).finally(function () {
+      if (timer) clearTimeout(timer);
+    });
+  }
+
+  // Pesan error yang ramah untuk timeout vs gangguan koneksi.
+  function networkErrorMessage(err) {
+    if (err && err.name === "AbortError") {
+      return "Timeout — server lambat. Coba lagi.";
+    }
+    return "Tidak dapat terhubung ke server. Periksa koneksi Anda.";
+  }
+
   // Form kontak → POST /api/contact (server meneruskan pesan ke email tim).
   function bindContactForm() {
     const form = document.getElementById("contact-form");
@@ -336,17 +362,22 @@
       };
 
       try {
-        const res = await fetch("/api/contact", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "same-origin",
-          body: JSON.stringify(payload),
-        });
+        const res = await fetchWithTimeout(
+          "/api/contact",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify(payload),
+          },
+          10000
+        );
 
         let data = null;
         try {
           data = await res.json();
         } catch (err) {
+          if (err && err.name === "AbortError") throw err;
           data = null;
         }
 
@@ -365,11 +396,7 @@
           );
         }
       } catch (err) {
-        setStatus(
-          status,
-          "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
-          true
-        );
+        setStatus(status, networkErrorMessage(err), true);
       }
 
       if (button) button.disabled = false;
@@ -380,16 +407,21 @@
 
   /* ---------- 7b. Form auth → API (/api/register, /api/login) ---------- */
   async function postJson(url, payload) {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "same-origin",
-      body: JSON.stringify(payload),
-    });
+    const res = await fetchWithTimeout(
+      url,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify(payload),
+      },
+      10000
+    );
     let data = null;
     try {
       data = await res.json();
     } catch (err) {
+      if (err && err.name === "AbortError") throw err;
       data = null;
     }
     return { ok: res.ok, status: res.status, data: data };
@@ -437,11 +469,7 @@
           true
         );
       } catch (err) {
-        setStatus(
-          status,
-          "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
-          true
-        );
+        setStatus(status, networkErrorMessage(err), true);
       }
 
       if (button) button.disabled = false;
@@ -476,76 +504,168 @@
     "✅ Akun dibuat. Mengalihkan…"
   );
 
-  /* ---------- 7c. Testimoni dinamis (landing) ---------- */
+  /* ---------- 7c. Testimoni gabungan (template + API) ---------- */
+  // Semua testimoni (API + template) untuk diisi ke modal saat tombol diklik.
+  let allTestimonials = [];
+
+  /** Normalisasi quote untuk dedupe (buang tanda kutip & huruf kecil semua). */
+  function normalizeQuote(value) {
+    return String(value || "")
+      .trim()
+      .replace(/^[“"'"]+|[”"'"]+$/g, "")
+      .trim()
+      .toLowerCase();
+  }
+
+  /** Baca kartu testimoni statis dari DOM SEBELUM grid diubah. */
+  function readTemplateItems(grid) {
+    return Array.from(grid.querySelectorAll(".quote-card")).map(function (card) {
+      const quoteEl = card.querySelector("blockquote p");
+      const nameEl = card.querySelector(".quote-author strong");
+      const roleEl = card.querySelector(".quote-author small");
+      const avatarEl = card.querySelector(".avatar");
+      return {
+        quote: quoteEl ? quoteEl.textContent.trim() : "",
+        name: nameEl ? nameEl.textContent.trim() : "",
+        roleLabel: roleEl ? roleEl.textContent.trim() : "",
+        isTemplate: true,
+        avatarClass: avatarEl ? avatarEl.getAttribute("class") : "avatar",
+      };
+    });
+  }
+
+  /**
+   * Render satu kartu testimoni (anti-XSS: textContent/createElement saja).
+   * mode "grid" → <figure> (valid di dalam role=list grid);
+   * mode "modal" → <div> (valid di dalam div.testi-modal-list).
+   */
+  function renderQuoteCard(item, mode) {
+    const card = document.createElement(mode === "modal" ? "div" : "figure");
+    card.className = "quote-card";
+    card.setAttribute("role", "listitem");
+
+    const stars = document.createElement("div");
+    stars.className = "quote-stars";
+    stars.setAttribute("role", "img");
+    stars.setAttribute("aria-label", "Rating 5 dari 5");
+    stars.textContent = "⭐⭐⭐⭐⭐";
+
+    const blockquote = document.createElement("blockquote");
+    const p = document.createElement("p");
+    p.textContent = "“" + String(item.quote || "") + "”";
+    blockquote.appendChild(p);
+
+    const caption = document.createElement(mode === "modal" ? "div" : "figcaption");
+    caption.className = "quote-author";
+
+    const name = item.name || "Pengguna CerdasBaca";
+    const initials = String(name)
+      .split(/\s+/)
+      .slice(0, 2)
+      .map(function (w) {
+        return w.charAt(0).toUpperCase();
+      })
+      .join("");
+
+    const avatar = document.createElement("span");
+    avatar.className = item.avatarClass || "avatar";
+    avatar.setAttribute("aria-hidden", "true");
+    avatar.textContent = initials || "CB";
+
+    const who = document.createElement("span");
+    const strong = document.createElement("strong");
+    strong.textContent = name;
+    const small = document.createElement("small");
+    small.textContent = item.roleLabel || "Pengguna CerdasBaca";
+    who.appendChild(strong);
+    who.appendChild(small);
+
+    caption.appendChild(avatar);
+    caption.appendChild(who);
+
+    card.appendChild(stars);
+    card.appendChild(blockquote);
+    card.appendChild(caption);
+    return card;
+  }
+
   async function loadTestimonials() {
     const grid = document.getElementById("testimoni-grid");
     if (!grid) return;
 
+    const moreBtn = document.getElementById("btn-testi-more");
+    const moreCount = document.getElementById("testi-more-count");
+
+    // 1. Simpan 3 template asli dari DOM sebelum grid diubah.
+    const templateItems = readTemplateItems(grid);
+    allTestimonials = templateItems;
+
     try {
-      const res = await fetch("/api/testimonials");
-      if (!res.ok) return; // fallback statis tetap tampil
+      const res = await fetchWithTimeout("/api/testimonials", {}, 8000);
+      if (!res.ok) return; // gagal → fallback statis tetap tampil, tombol more tersembunyi
       let data = null;
       try {
         data = await res.json();
       } catch (err) {
+        if (err && err.name === "AbortError") throw err;
         data = null;
       }
-      const items = data && Array.isArray(data.items) ? data.items : [];
-      if (!items.length) return; // kosong → biarkan fallback statis
+      const apiItems = data && Array.isArray(data.items) ? data.items : [];
+      if (!apiItems.length) return; // kosong → biarkan template, tombol more tersembunyi
 
-      grid.innerHTML = "";
-      items.slice(0, 6).forEach(function (item) {
-        const figure = document.createElement("figure");
-        figure.className = "quote-card";
-        figure.setAttribute("role", "listitem");
-
-        const stars = document.createElement("div");
-        stars.className = "quote-stars";
-        stars.setAttribute("role", "img");
-        stars.setAttribute("aria-label", "Rating 5 dari 5");
-        stars.textContent = "⭐⭐⭐⭐⭐";
-
-        const blockquote = document.createElement("blockquote");
-        const p = document.createElement("p");
-        p.textContent = "“" + String(item.quote || "") + "”";
-        blockquote.appendChild(p);
-
-        const figcaption = document.createElement("figcaption");
-        figcaption.className = "quote-author";
-
-        const name = item.name || "Pengguna CerdasBaca";
-        const initials = String(name)
-          .split(/\s+/)
-          .slice(0, 2)
-          .map(function (w) {
-            return w.charAt(0).toUpperCase();
-          })
-          .join("");
-
-        const avatar = document.createElement("span");
-        avatar.className = "avatar";
-        avatar.setAttribute("aria-hidden", "true");
-        avatar.textContent = initials || "CB";
-
-        const who = document.createElement("span");
-        const strong = document.createElement("strong");
-        strong.textContent = name;
-        const small = document.createElement("small");
-        small.textContent = item.roleLabel || "Pengguna CerdasBaca";
-        who.appendChild(strong);
-        who.appendChild(small);
-
-        figcaption.appendChild(avatar);
-        figcaption.appendChild(who);
-
-        figure.appendChild(stars);
-        figure.appendChild(blockquote);
-        figure.appendChild(figcaption);
-        grid.appendChild(figure);
+      // 2. Dedupe: lewati item API yang quote-nya sama dengan salah satu template.
+      const templateQuotes = {};
+      templateItems.forEach(function (t) {
+        templateQuotes[normalizeQuote(t.quote)] = true;
       });
+      const freshApi = apiItems.filter(function (item) {
+        return !templateQuotes[normalizeQuote(item.quote)];
+      });
+
+      // 3. Gabung: API dulu (lebih baru), lalu template.
+      const merged = freshApi.concat(templateItems);
+      allTestimonials = merged;
+
+      // 4. Grid tampilkan maksimal 3 kartu.
+      grid.innerHTML = ""; // hanya kosongkan; render data via createElement/textContent
+      merged.slice(0, 3).forEach(function (item) {
+        grid.appendChild(renderQuoteCard(item, "grid"));
+      });
+
+      // 5. Tombol "lihat lain" hanya bila total > 3.
+      const showMore = merged.length > 3;
+      if (moreBtn) moreBtn.hidden = !showMore;
+      if (moreCount) {
+        moreCount.hidden = !showMore;
+        moreCount.textContent = showMore
+          ? "Menampilkan 3 dari " + merged.length + " testimoni."
+          : "";
+      }
     } catch (err) {
-      /* offline / API mati → fallback statis tetap tampil */
+      /* offline / API mati / timeout → fallback statis tetap tampil */
     }
+  }
+
+  // Buka modal "Semua Testimoni" berisi SELURUH gabungan (template + API).
+  const testiMoreBtn = document.getElementById("btn-testi-more");
+  if (testiMoreBtn) {
+    testiMoreBtn.addEventListener("click", function () {
+      const list = document.getElementById("testi-modal-list");
+      const sub = document.getElementById("testi-modal-sub");
+      if (list) {
+        list.innerHTML = ""; // hanya kosongkan; render data via createElement/textContent
+        allTestimonials.forEach(function (item) {
+          list.appendChild(renderQuoteCard(item, "modal"));
+        });
+      }
+      if (sub) {
+        sub.textContent =
+          allTestimonials.length +
+          " cerita dari guru, siswa, dan orang tua CerdasBaca.";
+      }
+      // Buka memakai mekanisme modal yang sama (focus trap, ESC, data-modal-close).
+      openModal("modal-testi");
+    });
   }
 
   if (document.getElementById("testimoni-grid")) {

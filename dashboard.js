@@ -57,15 +57,40 @@
     el.classList.toggle("is-error", Boolean(isError));
   }
 
+  // Fetch JSON dengan timeout (AbortController) agar UI tidak hang.
+  // Default 8 dtk; bisa di-override via options.timeoutMs (dihapus sebelum fetch).
   async function fetchJson(url, options) {
-    const res = await fetch(url, options);
-    let data = null;
+    const opts = options || {};
+    const timeoutMs = opts.timeoutMs || 8000;
+    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    const timer = controller
+      ? setTimeout(function () {
+          controller.abort();
+        }, timeoutMs)
+      : null;
+    const finalOpts = Object.assign({}, opts);
+    delete finalOpts.timeoutMs;
+    if (controller) finalOpts.signal = controller.signal;
     try {
-      data = await res.json();
-    } catch (e) {
-      data = null;
+      const res = await fetch(url, finalOpts);
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (e) {
+        // AbortError saat baca body = timeout → jangan telan jadi data:null
+        // (ok:true + data:null membuat boot TypeError di me.data.user).
+        if (e && e.name === "AbortError") throw e;
+        data = null;
+      }
+      return { ok: res.ok, status: res.status, data: data };
+    } catch (err) {
+      if (err && err.name === "AbortError") {
+        return { ok: false, status: 0, data: { error: "Timeout — server lambat. Coba lagi." } };
+      }
+      throw err;
+    } finally {
+      if (timer) clearTimeout(timer);
     }
-    return { ok: res.ok, status: res.status, data: data };
   }
 
   function errorMessage(fallback) {
@@ -375,13 +400,18 @@
 
   /* ---------- Keluar ---------- */
   if (logoutBtn) {
-    logoutBtn.addEventListener("click", async function () {
+    logoutBtn.addEventListener("click", function () {
+      if (logoutBtn.disabled) return;
       logoutBtn.disabled = true;
+      // keepalive: request boleh jalan setelah navigasi; tidak menunggu response
       try {
-        await fetchJson("/api/logout", { method: "POST" });
-      } catch (err) {
-        /* cookie tetap dibersihkan bila server sempat merespons */
-      }
+        fetch("/api/logout", {
+          method: "POST",
+          keepalive: true,
+          headers: { "Content-Type": "application/json" },
+        }).catch(function () {});
+      } catch (e) {}
+      // redirect langsung — tidak menunggu API
       window.location.replace("index.html");
     });
   }

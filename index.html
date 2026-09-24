@@ -432,6 +432,12 @@
           </figure>
         </div>
 
+        <!-- Tombol "lihat lain" + jumlah: muncul hanya bila total testimoni > 3 -->
+        <div class="testi-more-wrap">
+          <button type="button" id="btn-testi-more" class="btn btn-outline" hidden>Lihat Testimoni Lain</button>
+          <p class="testi-more-count" id="testi-more-count" hidden></p>
+        </div>
+
         <!-- FAQ -->
         <header class="section-head section-head-sub">
           <h3 id="faq-title">Pertanyaan Umum (FAQ)</h3>
@@ -646,6 +652,18 @@
       <p class="modal-switch">Sudah punya akun?
         <button type="button" data-modal-switch="modal-login">Masuk di sini</button>
       </p>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL SEMUA TESTIMONI ==================== -->
+  <div class="modal" id="modal-testi" role="dialog" aria-modal="true" aria-labelledby="testi-modal-title" hidden>
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-card modal-card-wide" role="document">
+      <button type="button" class="modal-close" data-modal-close aria-label="Tutup daftar testimoni">&times;</button>
+      <div class="modal-icon" aria-hidden="true">💬</div>
+      <h2 id="testi-modal-title">Semua Testimoni</h2>
+      <p class="modal-sub" id="testi-modal-sub">Cerita dari guru, siswa, dan orang tua CerdasBaca.</p>
+      <div class="testi-modal-list" id="testi-modal-list" role="list"></div>
     </div>
   </div>
 
