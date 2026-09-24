@@ -12,7 +12,6 @@
   /* ---------- Elemen ---------- */
   const alertBox = document.getElementById("dash-alert");
   const alertText = document.getElementById("dash-alert-text");
-  const retryBtn = document.getElementById("btn-retry");
   const nameEl = document.getElementById("user-name");
   const metaEl = document.getElementById("user-meta");
   const statTotal = document.getElementById("stat-total");
@@ -45,13 +44,11 @@
     alertText.textContent = message;
     alertBox.hidden = false;
     alertBox.classList.toggle("is-info", Boolean(opts && opts.info));
-    if (retryBtn) retryBtn.hidden = Boolean(opts && opts.info);
   }
 
   function hideAlert() {
     if (!alertBox) return;
     alertBox.hidden = true;
-    if (retryBtn) retryBtn.hidden = true;
   }
 
   function setStatus(el, message, isError) {
@@ -386,14 +383,6 @@
         /* cookie tetap dibersihkan bila server sempat merespons */
       }
       window.location.replace("index.html");
-    });
-  }
-
-  /* ---------- Coba lagi ---------- */
-  if (retryBtn) {
-    retryBtn.addEventListener("click", function () {
-      hideAlert();
-      boot();
     });
   }
 

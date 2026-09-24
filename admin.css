@@ -1,10 +1,61 @@
 /* ============================================================
    CerdasBaca — gaya khusus Panel Admin
    Di-setelah styles.css, page.css, dashboard.css
+   Semua dibungkus .admin-page agar dashboard siswa tak ikut terpengaruh
    ============================================================ */
+
+/* ---------- Identitas header ---------- */
+/* Chip "Admin" di samping brand */
+.admin-chip {
+  display: inline-block;
+  padding: 0.18rem 0.6rem;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  line-height: 1.4;
+}
+
+/* ---------- Hero: banner panel gelap, beda dari dashboard siswa ---------- */
+.admin-page .dash-hero {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+  color: #fff;
+  padding: clamp(1.35rem, 3vw, 2rem);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-page .dash-hero h1 {
+  color: #fff;
+}
+
+/* Sub-judul & meta di atas latar gelap */
+.admin-page .dash-hero .dash-card-sub {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.admin-page .dash-hero .dash-meta {
+  color: rgba(255, 255, 255, 0.75);
+}
 
 #admin-stats {
   grid-template-columns: repeat(2, 1fr);
+}
+
+/* Statistik admin: lebih padat, rata kiri, aksen kiri */
+.admin-page .dash-stat {
+  background: var(--bg-alt);
+  box-shadow: none;
+  border-left: 3px solid var(--primary);
+  text-align: left;
+  padding: 0.9rem 1rem;
+}
+
+.admin-page .dash-stat-num {
+  font-size: clamp(1.4rem, 3.5vw, 1.8rem);
 }
 
 /* Lompat ke bagian (anchor di hero) */
@@ -33,9 +84,47 @@
   border-color: var(--primary);
 }
 
+/* Chip lompat di atas hero gelap: latar tembus cahaya, teks putih */
+.admin-page .admin-jumps a {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #fff;
+}
+
+.admin-page .admin-jumps a:hover,
+.admin-page .admin-jumps a:focus-visible {
+  background: #fff;
+  border-color: #fff;
+  color: var(--primary-dark);
+}
+
+/* ---------- Grid manajemen: seragam & padat ---------- */
+/* Kartu admin: aksen kiri + padding lebih rapat dari dashboard siswa */
+.admin-page .dash-card {
+  border-left: 4px solid var(--primary);
+  padding: 1.25rem 1.15rem;
+}
+
+/* Section daftar/monitoring melebar penuh agar penekanan pada data */
+.admin-page #kelas,
+.admin-page #lomba,
+.admin-page #jurnal,
+.admin-page #testimoni,
+.admin-page #katalog {
+  grid-column: 1 / -1;
+}
+
 @media (min-width: 560px) {
   #admin-stats {
     grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Di layar lebar, pakai grid seragam (bukan 2-kolom 0.9/1.1 ala siswa) */
+@media (min-width: 760px) {
+  .admin-page .dash-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    align-items: start;
   }
 }
 
